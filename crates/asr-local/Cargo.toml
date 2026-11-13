@@ -1,0 +1,17 @@
+[package]
+name = "app-asr-local"
+version.workspace = true
+edition.workspace = true
+license.workspace = true
+rust-version.workspace = true
+
+[dependencies]
+app-audio.workspace = true
+app-core.workspace = true
+async-trait = "0.1.92"
+sherpa-rs = { version = "0.6.8", default-features = false, features = ["download-binaries"] }
+tokio = { version = "1.53.3", features = ["rt", "sync"] }
+tracing = "0.1.44"
+
+[dev-dependencies]
+tokio = { version = "1.53.3", features = ["full"] }

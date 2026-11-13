@@ -1,0 +1,36 @@
+[workspace]
+resolver = "2"
+members = ["crates/*", "apps/desktop/src-tauri"]
+
+[workspace.package]
+version = "0.2.0"
+edition = "2021"
+license = "MIT"
+rust-version = "1.85"
+
+[workspace.dependencies]
+app-core = { path = "crates/core" }
+app-hotkey = { path = "crates/hotkey" }
+app-audio = { path = "crates/audio" }
+app-platform = { path = "crates/platform" }
+app-asr-cloud = { path = "crates/asr-cloud" }
+app-asr-local = { path = "crates/asr-local" }
+app-llm = { path = "crates/llm" }
+app-cleanup = { path = "crates/cleanup" }
+app-storage = { path = "crates/storage" }
+
+[profile.dev.package."*"]
+opt-level = 2
+
+# sherpa-rs-sys's build script links the *debug* MSVC CRT (msvcrtd -> ucrtbased.dll)
+# whenever the build script itself is compiled with debug assertions, while Rust std
+# and the prebuilt sherpa-onnx / onnxruntime DLLs use the release UCRT. Two CRT heaps
+# in one process cause "_CrtIsValidHeapPointer" / "is_block_type_valid" assertions
+# on free in debug builds. Compiling build scripts without debug assertions makes it
+# pick the release CRT like everything else.
+[profile.dev.build-override]
+debug-assertions = false
+
+[profile.release]
+lto = "thin"
+codegen-units = 4

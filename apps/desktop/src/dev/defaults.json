@@ -1,0 +1,306 @@
+{
+  "version": 1,
+  "preset": "private",
+  "providers": [
+    {
+      "id": "parakeet",
+      "type": "parakeet_local",
+      "display_name": "Parakeet (on this computer)",
+      "base_url": null,
+      "model": "parakeet-tdt-0.6b-v2-int8",
+      "models": [],
+      "enabled": true,
+      "accepts_prompt": false,
+      "treat_as_local": false
+    },
+    {
+      "id": "whisper",
+      "type": "whisper_local",
+      "display_name": "Whisper (on this computer)",
+      "base_url": null,
+      "model": "whisper-turbo",
+      "models": [],
+      "enabled": true,
+      "accepts_prompt": false,
+      "treat_as_local": false
+    },
+    {
+      "id": "openai-asr",
+      "type": "openai_batch",
+      "display_name": "OpenAI transcription",
+      "base_url": "https://api.openai.com/v1",
+      "model": "gpt-4o-transcribe",
+      "models": [],
+      "enabled": true,
+      "accepts_prompt": false,
+      "treat_as_local": false
+    },
+    {
+      "id": "custom-asr",
+      "type": "openai_compat_asr",
+      "display_name": "Custom transcription server",
+      "base_url": "http://localhost:8000/v1",
+      "model": "whisper-1",
+      "models": [],
+      "enabled": true,
+      "accepts_prompt": false,
+      "treat_as_local": false
+    },
+    {
+      "id": "anthropic",
+      "type": "anthropic",
+      "display_name": "Anthropic Claude",
+      "base_url": "https://api.anthropic.com",
+      "model": "claude-haiku-5-5",
+      "models": [],
+      "enabled": true,
+      "accepts_prompt": false,
+      "treat_as_local": false
+    },
+    {
+      "id": "openai-chat",
+      "type": "openai_chat",
+      "display_name": "OpenAI",
+      "base_url": "https://api.openai.com/v1",
+      "model": "gpt-5-mini",
+      "models": [],
+      "enabled": true,
+      "accepts_prompt": false,
+      "treat_as_local": false
+    },
+    {
+      "id": "perplexity",
+      "type": "perplexity_agent",
+      "display_name": "Perplexity",
+      "base_url": "https://api.perplexity.ai",
+      "model": "anthropic/claude-haiku-5-5",
+      "models": [
+        "anthropic/claude-haiku-5-5",
+        "openai/gpt-5.5",
+        "perplexity/sonar"
+      ],
+      "enabled": true,
+      "accepts_prompt": false,
+      "treat_as_local": false
+    },
+    {
+      "id": "ollama",
+      "type": "ollama",
+      "display_name": "Ollama (on this computer)",
+      "base_url": "http://localhost:11434",
+      "model": "gemma4:e2b-it-qat",
+      "models": [],
+      "enabled": true,
+      "accepts_prompt": false,
+      "treat_as_local": false
+    },
+    {
+      "id": "lmstudio",
+      "type": "openai_compat_chat",
+      "display_name": "LM Studio (on this computer)",
+      "base_url": "http://localhost:1234/v1",
+      "model": "local-model",
+      "models": [],
+      "enabled": true,
+      "accepts_prompt": false,
+      "treat_as_local": true
+    }
+  ],
+  "asr_chain": [
+    "parakeet",
+    "whisper"
+  ],
+  "llm_chain": [
+    "ollama",
+    "lmstudio"
+  ],
+  "hedge_ms": null,
+  "cleanup_wait_ms": null,
+  "cleanup_level": "light",
+  "standing_instruction": "",
+  "language": null,
+  "hotkeys": {
+    "push_to_talk": {
+      "mods": 1,
+      "key": 32
+    },
+    "hands_free": {
+      "mods": 3,
+      "key": 32
+    },
+    "command": {
+      "mods": 5,
+      "key": 32
+    },
+    "undo_ai": {
+      "mods": 5,
+      "key": 90
+    },
+    "paste_last": {
+      "mods": 5,
+      "key": 86
+    }
+  },
+  "tap_max_ms": 250,
+  "double_tap_handsfree": false,
+  "handsfree_max_min": 20,
+  "mic_mode": "always_warm",
+  "mic_early_open": "off",
+  "input_device": null,
+  "preroll_ms": 1500,
+  "prefer_wired": true,
+  "context": {
+    "enabled": true,
+    "app_name": true,
+    "window_title": true,
+    "caret_text": true,
+    "selection": true,
+    "visible_text": true,
+    "local_only": false
+  },
+  "app_rules": [
+    {
+      "app": "windowsterminal.exe",
+      "cleanup": "off",
+      "context": false,
+      "never_dictate": false,
+      "insert_mode": null,
+      "paste_delay_ms": 400,
+      "paste_chord": null
+    },
+    {
+      "app": "conhost.exe",
+      "cleanup": "off",
+      "context": false,
+      "never_dictate": false,
+      "insert_mode": null,
+      "paste_delay_ms": 400,
+      "paste_chord": null
+    },
+    {
+      "app": "openconsole.exe",
+      "cleanup": "off",
+      "context": false,
+      "never_dictate": false,
+      "insert_mode": null,
+      "paste_delay_ms": 400,
+      "paste_chord": null
+    },
+    {
+      "app": "wezterm-gui.exe",
+      "cleanup": "off",
+      "context": false,
+      "never_dictate": false,
+      "insert_mode": null,
+      "paste_delay_ms": 400,
+      "paste_chord": null
+    },
+    {
+      "app": "alacritty.exe",
+      "cleanup": "off",
+      "context": false,
+      "never_dictate": false,
+      "insert_mode": null,
+      "paste_delay_ms": 400,
+      "paste_chord": null
+    },
+    {
+      "app": "com.apple.terminal",
+      "cleanup": "off",
+      "context": false,
+      "never_dictate": false,
+      "insert_mode": null,
+      "paste_delay_ms": 400,
+      "paste_chord": null
+    },
+    {
+      "app": "com.googlecode.iterm2",
+      "cleanup": "off",
+      "context": false,
+      "never_dictate": false,
+      "insert_mode": null,
+      "paste_delay_ms": 400,
+      "paste_chord": null
+    },
+    {
+      "app": "mstsc.exe",
+      "cleanup": null,
+      "context": false,
+      "never_dictate": false,
+      "insert_mode": null,
+      "paste_delay_ms": 600,
+      "paste_chord": null
+    },
+    {
+      "app": "1password.exe",
+      "cleanup": null,
+      "context": false,
+      "never_dictate": true,
+      "insert_mode": null,
+      "paste_delay_ms": null,
+      "paste_chord": null
+    },
+    {
+      "app": "bitwarden.exe",
+      "cleanup": null,
+      "context": false,
+      "never_dictate": true,
+      "insert_mode": null,
+      "paste_delay_ms": null,
+      "paste_chord": null
+    },
+    {
+      "app": "keepass.exe",
+      "cleanup": null,
+      "context": false,
+      "never_dictate": true,
+      "insert_mode": null,
+      "paste_delay_ms": null,
+      "paste_chord": null
+    },
+    {
+      "app": "keepassxc.exe",
+      "cleanup": null,
+      "context": false,
+      "never_dictate": true,
+      "insert_mode": null,
+      "paste_delay_ms": null,
+      "paste_chord": null
+    },
+    {
+      "app": "com.1password.1password",
+      "cleanup": null,
+      "context": false,
+      "never_dictate": true,
+      "insert_mode": null,
+      "paste_delay_ms": null,
+      "paste_chord": null
+    },
+    {
+      "app": "com.bitwarden.desktop",
+      "cleanup": null,
+      "context": false,
+      "never_dictate": true,
+      "insert_mode": null,
+      "paste_delay_ms": null,
+      "paste_chord": null
+    }
+  ],
+  "dictionary": [],
+  "learn_from_corrections": true,
+  "snippets": [],
+  "keep_on_clipboard": false,
+  "sounds": true,
+  "sound_volume": 0.3,
+  "sound_style": "classic",
+  "pill_style": "line",
+  "success_animation": "flash",
+  "accent": "cobalt",
+  "launch_at_login": true,
+  "start_ollama": true,
+  "paused": false,
+  "store_history": true,
+  "audio_retention_days": 7,
+  "onboarding_done": false,
+  "pill_positions": {}
+}

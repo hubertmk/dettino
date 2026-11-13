@@ -1,0 +1,201 @@
+name: Release
+# Builds the Windows installer and the macOS DMG with the same `pnpm build` used
+# locally (scripts/build.mjs: bundle config, build identity, installer names).
+#
+# - Pushing a `vX.Y.Z` tag (`pnpm release <bump> --no-build && git push --follow-tags`)
+#   builds both and attaches them to a *draft* GitHub Release. Review it and publish.
+#   If a release for that tag already exists (e.g. uploaded by hand), the files are
+#   added to it, replacing any with the same name.
+# - Running it by hand (Actions → Release → Run workflow) builds the current commit
+#   and attaches the installers to a draft pre-release "Test build <commit>". Their
+#   names carry the commit (`Dettino_0.2.0+a1b2c3d4e_…`), like a local `pnpm build`
+#   off a tag. Delete that draft when done; it is never meant to be published.
+#
+# Installers go straight to the release rather than through workflow artifacts:
+# release files do not count against the account's artifact storage quota.
+#
+# macOS needs these repository secrets (Settings → Secrets and variables → Actions):
+#   APPLE_CERTIFICATE           base64 of the Developer ID Application .p12 (required)
+#   APPLE_CERTIFICATE_PASSWORD  the .p12 export password (required)
+# and, for notarization, one of these sets (without them the DMG is signed but not
+# notarized, and Gatekeeper blocks it on other Macs until right-click → Open):
+#   APPLE_API_KEY, APPLE_API_ISSUER, APPLE_API_KEY_P8 (contents of AuthKey_….p8)
+#   APPLE_ID, APPLE_PASSWORD (app-specific password), APPLE_TEAM_ID
+on:
+  push:
+    tags: ["v*"]
+  workflow_dispatch:
+
+permissions:
+  contents: read
+
+concurrency:
+  group: release-${{ github.ref }}
+  cancel-in-progress: false
+
+jobs:
+  # Checks the tag and creates the draft release both builds upload into, so the two
+  # build jobs never race to create it.
+  prepare:
+    runs-on: ubuntu-latest
+    permissions:
+      contents: write
+    outputs:
+      release: ${{ steps.release.outputs.name }}
+    env:
+      GH_TOKEN: ${{ github.token }}
+      GH_REPO: ${{ github.repository }}
+    steps:
+      - uses: actions/checkout@v4
+      # A tag must match the workspace version, or the installers would be named
+      # after the commit instead of the version (see build.mjs).
+      - name: Tag matches Cargo.toml
+        if: github.ref_type == 'tag'
+        run: |
+          version=$(sed -n '/^\[workspace\.package\]/,/^\[/{s/^version = "\(.*\)"/\1/p;}' Cargo.toml)
+          if [ "v$version" != "$GITHUB_REF_NAME" ]; then
+            echo "::error::Tag $GITHUB_REF_NAME does not match the workspace version $version in Cargo.toml. Tag with pnpm release."
+            exit 1
+          fi
+      - name: Draft release
+        id: release
+        run: |
+          if [ "$GITHUB_REF_TYPE" = tag ]; then
+            name=$GITHUB_REF_NAME
+            if ! gh release view "$name" > /dev/null 2>&1; then
+              gh release create "$name" --draft --verify-tag --title "Dettino ${name#v}" --generate-notes
+            fi
+          else
+            # A draft's tag is only created on publishing, so this leaves no tag behind.
+            name="test-${GITHUB_SHA::9}"
+            if ! gh release view "$name" > /dev/null 2>&1; then
+              gh release create "$name" --draft --prerelease --target "$GITHUB_SHA" \
+                --title "Test build ${GITHUB_SHA::9} ($GITHUB_REF_NAME)" \
+                --notes "Built by a manual run of the Release workflow from \`$GITHUB_REF_NAME\` at $GITHUB_SHA. Not for publishing: download the installers, then delete this draft."
+            fi
+          fi
+          echo "name=$name" >> "$GITHUB_OUTPUT"
+
+  build:
+    needs: prepare
+    permissions:
+      contents: write
+    strategy:
+      fail-fast: false
+      matrix:
+        include:
+          - os: windows-latest
+            bundle: target/release/bundle/nsis/*-setup.exe
+          - os: macos-15 # Apple Silicon
+            bundle: target/release/bundle/dmg/*.dmg
+    runs-on: ${{ matrix.os }}
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          # build.mjs reads the tag at HEAD and the commit date for the build identity.
+          fetch-depth: 0
+      - uses: dtolnay/rust-toolchain@1.94.1 # keep in step with rust-toolchain.toml
+      # Same key as ci.yml, so a release restores the libraries main already downloaded.
+      - name: Cache sherpa-onnx binaries
+        uses: actions/cache@v4
+        with:
+          path: |
+            ~/Library/Caches/sherpa-rs
+            ~/AppData/Local/sherpa-rs
+          key: sherpa-rs-${{ runner.os }}-${{ runner.arch }}-${{ hashFiles('Cargo.lock') }}
+          restore-keys: |
+            sherpa-rs-${{ runner.os }}-${{ runner.arch }}-
+      - name: libclang (Windows)
+        if: runner.os == 'Windows'
+        shell: bash
+        run: printf '%s\n' 'LIBCLANG_PATH=C:\Program Files\LLVM\bin' >> "$GITHUB_ENV"
+
+      # build.mjs signs with the first Developer ID identity it finds in the keychain
+      # and refuses an ad-hoc build on CI, so the certificate goes into a temporary
+      # keychain first. Everything lives in RUNNER_TEMP, outside the checkout, so the
+      # tree stays clean and the build keeps its plain version label.
+      - name: Signing certificate (macOS)
+        if: runner.os == 'macOS'
+        env:
+          APPLE_CERTIFICATE: ${{ secrets.APPLE_CERTIFICATE }}
+          APPLE_CERTIFICATE_PASSWORD: ${{ secrets.APPLE_CERTIFICATE_PASSWORD }}
+        run: |
+          if [ -z "$APPLE_CERTIFICATE" ]; then
+            echo "::error::The APPLE_CERTIFICATE secret is not set. Export the Developer ID Application certificate with its private key as .p12, then add base64 of it as APPLE_CERTIFICATE and its password as APPLE_CERTIFICATE_PASSWORD."
+            exit 1
+          fi
+          keychain="$RUNNER_TEMP/signing.keychain-db"
+          keychain_pw=$(openssl rand -hex 16)
+          echo "$APPLE_CERTIFICATE" | base64 --decode > "$RUNNER_TEMP/cert.p12"
+          security create-keychain -p "$keychain_pw" "$keychain"
+          security set-keychain-settings -lut 21600 "$keychain"
+          security unlock-keychain -p "$keychain_pw" "$keychain"
+          security import "$RUNNER_TEMP/cert.p12" -P "$APPLE_CERTIFICATE_PASSWORD" -A -t cert -f pkcs12 -k "$keychain"
+          rm "$RUNNER_TEMP/cert.p12"
+          security set-key-partition-list -S apple-tool:,apple:,codesign: -s -k "$keychain_pw" "$keychain" > /dev/null
+          # Keep the existing keychains in the search list (one word per keychain path).
+          # shellcheck disable=SC2046
+          security list-keychains -d user -s "$keychain" $(security list-keychains -d user | tr -d '"')
+          security find-identity -v -p codesigning "$keychain"
+
+      # Tauri treats a set-but-empty APPLE_* variable as configured, so only the
+      # credentials that actually exist are exported.
+      - name: Notarization credentials (macOS)
+        if: runner.os == 'macOS'
+        env:
+          API_KEY: ${{ secrets.APPLE_API_KEY }}
+          API_ISSUER: ${{ secrets.APPLE_API_ISSUER }}
+          API_KEY_P8: ${{ secrets.APPLE_API_KEY_P8 }}
+          ID: ${{ secrets.APPLE_ID }}
+          PASSWORD: ${{ secrets.APPLE_PASSWORD }}
+          TEAM_ID: ${{ secrets.APPLE_TEAM_ID }}
+        run: |
+          if [ -n "$API_KEY" ] && [ -n "$API_ISSUER" ] && [ -n "$API_KEY_P8" ]; then
+            printf '%s\n' "$API_KEY_P8" > "$RUNNER_TEMP/AuthKey.p8"
+            {
+              echo "APPLE_API_KEY=$API_KEY"
+              echo "APPLE_API_ISSUER=$API_ISSUER"
+              echo "APPLE_API_KEY_PATH=$RUNNER_TEMP/AuthKey.p8"
+            } >> "$GITHUB_ENV"
+            echo "Notarizing with an App Store Connect API key"
+          elif [ -n "$ID" ] && [ -n "$PASSWORD" ] && [ -n "$TEAM_ID" ]; then
+            echo "::add-mask::$PASSWORD"
+            {
+              echo "APPLE_ID=$ID"
+              echo "APPLE_PASSWORD=$PASSWORD"
+              echo "APPLE_TEAM_ID=$TEAM_ID"
+            } >> "$GITHUB_ENV"
+            echo "Notarizing with an Apple ID"
+          else
+            echo "::warning::No notarization credentials: the DMG is signed but not notarized, and Gatekeeper will block it on other Macs."
+          fi
+
+      - uses: pnpm/action-setup@v4
+        with:
+          version: 11
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 22
+          cache: pnpm
+          cache-dependency-path: apps/desktop/pnpm-lock.yaml
+      - name: Install
+        working-directory: apps/desktop
+        run: pnpm install --frozen-lockfile
+      - name: Build
+        working-directory: apps/desktop
+        run: pnpm build
+      - name: Upload to the release
+        shell: bash
+        env:
+          GH_TOKEN: ${{ github.token }}
+          GH_REPO: ${{ github.repository }}
+          RELEASE: ${{ needs.prepare.outputs.release }}
+        run: |
+          shopt -s nullglob
+          files=(${{ matrix.bundle }})
+          if [ ${#files[@]} -eq 0 ]; then
+            echo "::error::No installer matching ${{ matrix.bundle }}"
+            exit 1
+          fi
+          ls -l "${files[@]}"
+          gh release upload "$RELEASE" "${files[@]}" --clobber

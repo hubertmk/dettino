@@ -1,0 +1,65 @@
+{
+  "version": "2.0.0",
+  "tasks": [
+    {
+      // Ctrl+Shift+B: full dev loop (Vite + Rust rebuild on change), same as `pnpm dev`.
+      "label": "Dettino: tauri dev",
+      "type": "shell",
+      "command": "pnpm tauri dev",
+      "options": { "cwd": "${workspaceFolder}/apps/desktop" },
+      "group": { "kind": "build", "isDefault": true },
+      "dependsOn": ["Dettino: clean up before tauri dev"],
+      "problemMatcher": [],
+      "presentation": { "panel": "dedicated", "clear": true }
+    },
+    {
+      // Stops a leftover dev dettino.exe and a Vite server still holding :1420.
+      "label": "Dettino: clean up before tauri dev",
+      "type": "process",
+      "command": "powershell.exe",
+      "args": ["-NoProfile", "-ExecutionPolicy", "Bypass", "-File", "${workspaceFolder}/.vscode/stop-dev.ps1", "-FreePort"],
+      "problemMatcher": [],
+      "presentation": { "reveal": "silent", "panel": "shared", "close": true }
+    },
+    {
+      // Stops a leftover dev dettino.exe so cargo can relink it; keeps a running Vite server.
+      "label": "Dettino: stop stale app",
+      "type": "process",
+      "command": "powershell.exe",
+      "args": ["-NoProfile", "-ExecutionPolicy", "Bypass", "-File", "${workspaceFolder}/.vscode/stop-dev.ps1"],
+      "problemMatcher": [],
+      "presentation": { "reveal": "silent", "panel": "shared", "close": true }
+    },
+    {
+      // Frontend dev server only; the debug build loads its UI from devUrl (localhost:1420).
+      "label": "Dettino: vite dev server",
+      "type": "shell",
+      "command": "pnpm vite:dev",
+      "options": { "cwd": "${workspaceFolder}/apps/desktop" },
+      "isBackground": true,
+      "problemMatcher": {
+        "owner": "vite",
+        "pattern": { "regexp": "^__never_matches__$" },
+        "background": {
+          "beginsPattern": "VITE",
+          "endsPattern": "Local"
+        }
+      },
+      "presentation": { "panel": "dedicated", "reveal": "silent" }
+    },
+    {
+      "label": "Dettino: cargo build",
+      "type": "shell",
+      "command": "cargo build -p dettino",
+      "options": { "cwd": "${workspaceFolder}" },
+      "problemMatcher": [],
+      "presentation": { "panel": "dedicated", "clear": true }
+    },
+    {
+      "label": "Dettino: prepare debug",
+      "dependsOrder": "sequence",
+      "dependsOn": ["Dettino: stop stale app", "Dettino: vite dev server", "Dettino: cargo build"],
+      "problemMatcher": []
+    }
+  ]
+}

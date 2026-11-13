@@ -1,0 +1,7 @@
+# Pinned: from Rust 1.100 on, Cargo's new build-dir layout has no target/<profile>/deps
+# when build scripts run, and the sherpa-rs-sys 0.6.8 build script panics copying the
+# speech libraries there ("Failed to copy … deps/libonnxruntime…"). Keep in step with
+# the dtolnay/rust-toolchain version in .github/workflows/{ci,release}.yml.
+[toolchain]
+channel = "1.94.1"
+components = ["clippy", "rustfmt"]

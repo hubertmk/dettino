@@ -1,0 +1,8 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="1024" height="1024" viewBox="0 0 1024 1024">
+  <!-- Dettino speech-bubble d: a lowercase d whose bowl is a speech bubble, in Cobalt (same as site/icon.svg). -->
+  <rect x="64" y="64" width="896" height="896" rx="208" fill="#2F5FDB"/>
+  <path d="M319 716L250 846L407 777Z" fill="#FFFFFF" stroke="#FFFFFF" stroke-width="22" stroke-linejoin="round"/>
+  <circle cx="478" cy="582" r="208" fill="#FFFFFF"/>
+  <rect x="606" y="182" width="160" height="612" rx="80" fill="#FFFFFF"/>
+  <circle cx="478" cy="582" r="88" fill="#2F5FDB"/>
+</svg>

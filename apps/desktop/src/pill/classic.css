@@ -1,0 +1,124 @@
+/* Classic pill: a grey idle dot that grows into a rounded card with glyph, waveform and label,
+   with an icon tray above it on hover. Window 420 × 124 (pill.rs `win_size`). */
+
+.stage.classic {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: flex-end;
+  padding-bottom: 12px;
+  gap: 8px;
+}
+
+.classic {
+  /* ---------- idle dot ---------- */
+  .dot-wrap { min-width: 24px; height: 24px; display: grid; place-items: center; }
+  .dot {
+    width: 10px; height: 10px; border-radius: 999px;
+    background: var(--dot); opacity: 0.7;
+    /* light + dark hairline so the dot stays visible on any wallpaper or window */
+    box-shadow: 0 0 0 1px rgba(255, 255, 255, 0.75), 0 0 0 2px rgba(0, 0, 0, 0.18);
+    transition: width 120ms var(--ease), height 120ms var(--ease), opacity 120ms var(--ease), box-shadow 120ms var(--ease);
+    display: grid; place-items: center;
+  }
+  .dot-wrap:hover .dot, .dot.hot { width: 14px; height: 14px; opacity: 1; box-shadow: 0 0 0 1px rgba(255, 255, 255, 0.8), 0 0 0 6px color-mix(in srgb, var(--dot) 22%, transparent); }
+  .dot.badge-no_mic, .dot.badge-hotkeys_off { width: 20px; height: 20px; opacity: 0.9; background: var(--surface); box-shadow: 0 0 0 1px var(--border), var(--shadow); color: var(--text-2); }
+  .dot.badge-error { background: var(--danger); opacity: 0.85; }
+  .dot.badge-cleanup_off { background: var(--warning); opacity: 0.85; }
+  .dot.badge-hotkeys_off { color: var(--warning); }
+  .dot.badge-downloading { background: transparent; opacity: 1; width: 14px; height: 14px; border: 2px solid color-mix(in srgb, var(--accent) 25%, transparent); border-top-color: var(--accent); animation: spin 900ms linear infinite; box-shadow: none; }
+  .dot svg { width: 12px; height: 12px; }
+  .paused-chip {
+    height: 22px; padding: 0 9px 0 7px; border-radius: 999px;
+    display: flex; align-items: center; gap: 5px;
+    background: var(--surface); box-shadow: 0 0 0 1px var(--border), var(--shadow);
+    color: var(--text-2); font-size: 11.5px; font-weight: 500; opacity: 0.85;
+    transition: opacity 120ms var(--ease);
+  }
+  .paused-chip svg { width: 12px; height: 12px; }
+  .dot-wrap:hover .paused-chip, .paused-chip.hot { opacity: 1; color: var(--text); }
+
+  /* ---------- pill ---------- */
+  .pill {
+    height: 36px;
+    min-width: 112px;
+    max-width: 320px;
+    border-radius: 999px;
+    background: var(--surface);
+    border: 1px solid var(--border);
+    box-shadow: var(--shadow);
+    color: var(--text);
+    display: flex; align-items: center; justify-content: center;
+    overflow: hidden;
+    transition: width 240ms var(--ease), background-color 240ms var(--ease), border-color 240ms var(--ease);
+    animation: grow 160ms var(--ease);
+  }
+  .pill-inner { display: inline-flex; align-items: center; gap: 8px; padding: 0 12px; white-space: nowrap; }
+  .pill .glyph { width: 16px; height: 16px; flex: none; display: grid; place-items: center; animation: rise 240ms var(--ease); }
+  .pill .glyph svg { width: 16px; height: 16px; }
+  .glyph.accent { color: var(--accent); }
+  .glyph.success { color: var(--success); }
+  .glyph.warning { color: var(--warning); }
+  .glyph.danger { color: var(--danger); }
+  .glyph.muted { color: var(--text-2); }
+  .label { font-size: 13px; line-height: 18px; font-weight: 600; font-variant-numeric: tabular-nums; animation: fade 240ms var(--ease); }
+  .detail { font-size: 12px; color: var(--text-2); font-weight: 500; }
+  .pill.handsfree { box-shadow: var(--shadow), inset 0 0 0 2px color-mix(in srgb, var(--accent) 55%, transparent); }
+  .pill.quiet .label { color: var(--warning); }
+
+  .action {
+    height: 24px; padding: 0 10px; border-radius: 12px; border: 0;
+    background: color-mix(in srgb, var(--accent) 14%, transparent); color: var(--accent);
+    font: 600 13px/24px inherit; font-family: inherit; cursor: pointer;
+  }
+  .action:hover { background: color-mix(in srgb, var(--accent) 22%, transparent); }
+  .action.danger { background: color-mix(in srgb, var(--danger) 13%, transparent); color: var(--danger); }
+
+  /* waveform: 7 bars scaled by --level */
+  .wave { display: inline-flex; align-items: center; gap: 2px; height: 20px; width: 33px; }
+  .wave i {
+    display: block; width: 3px; height: 20px; border-radius: 2px; background: var(--accent);
+    transform: scaleY(calc(0.2 + var(--level) * var(--w) * 0.8 + var(--b, 0)));
+    transform-origin: center;
+    transition: transform 60ms linear;
+  }
+  .pill.quiet .wave i { background: var(--warning); }
+
+  /* thinking dots */
+  .dots { display: inline-flex; gap: 4px; align-items: center; height: 16px; }
+  .dots i { width: 5px; height: 5px; border-radius: 99px; background: var(--accent); animation: pulse 1s var(--ease) infinite; }
+  .dots i:nth-child(2) { animation-delay: 150ms; }
+  .dots i:nth-child(3) { animation-delay: 300ms; }
+
+  /* ---------- hover tray ---------- */
+  .tray {
+    display: flex; gap: 4px; padding: 2px;
+    background: var(--surface); border: 1px solid var(--border); border-radius: 10px; box-shadow: var(--shadow);
+    animation: fade 120ms var(--ease);
+  }
+  .tray button {
+    position: relative; width: 28px; height: 28px; border: 0; border-radius: 8px; background: transparent; color: var(--text-2);
+    display: grid; place-items: center; cursor: pointer;
+  }
+  .tray button:hover { background: color-mix(in srgb, var(--text) 8%, transparent); color: var(--text); }
+  .tray button:disabled { opacity: 0.35; cursor: default; }
+  .tray button svg { width: 15px; height: 15px; }
+  .tray .ring { position: absolute; inset: 2px; pointer-events: none; }
+  .tip {
+    position: absolute; bottom: calc(100% + 6px); left: 50%; transform: translateX(-50%);
+    background: var(--text); color: var(--surface); font-size: 12px; padding: 4px 8px; border-radius: 6px; white-space: nowrap;
+    pointer-events: none; opacity: 0; transition: opacity 120ms var(--ease);
+  }
+  .tray button:hover .tip { opacity: 1; transition-delay: 400ms; }
+
+  @media (prefers-reduced-motion: reduce) {
+    .pill, .pill .glyph, .label { animation: fade 120ms linear; }
+    .pill { transition: none; }
+    .dots i { animation: none; opacity: 0.8; }
+    .wave i { transition: none; }
+  }
+  @media (forced-colors: active) {
+    .pill, .tray { border: 2px solid CanvasText; background: Canvas; }
+    .wave i, .dots i { background: Highlight; }
+  }
+}

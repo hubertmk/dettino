@@ -1,0 +1,33 @@
+{
+  "version": "0.2.0",
+  "configurations": [
+    {
+      // F5 / Ctrl+F5 with no extra extensions: runs `tauri dev` (Vite + Rust rebuild on save).
+      // Runs the Tauri CLI directly under Node without attaching to its children (Vite etc.).
+      // Stop (Shift+F5) kills the whole tree, app included; the preLaunchTask also clears any
+      // leftover dev instance or Vite server from an earlier run.
+      "name": "Dettino: run (tauri dev)",
+      "type": "node",
+      "request": "launch",
+      "program": "${workspaceFolder}/apps/desktop/node_modules/@tauri-apps/cli/tauri.js",
+      "args": ["dev"],
+      "cwd": "${workspaceFolder}/apps/desktop",
+      "console": "integratedTerminal",
+      "autoAttachChildProcesses": false,
+      "skipFiles": ["<node_internals>/**", "**/node_modules/**"],
+      "preLaunchTask": "Dettino: clean up before tauri dev"
+    },
+    {
+      // Native debugger with Rust breakpoints. Needs the C/C++ extension (ms-vscode.cpptools).
+      // Starts the Vite server in the background and builds target/debug/dettino.exe first.
+      "name": "Dettino: debug Rust (MSVC)",
+      "type": "cppvsdbg",
+      "request": "launch",
+      "program": "${workspaceFolder}/target/debug/dettino.exe",
+      "cwd": "${workspaceFolder}",
+      "environment": [{ "name": "RUST_BACKTRACE", "value": "1" }],
+      "console": "integratedTerminal",
+      "preLaunchTask": "Dettino: prepare debug"
+    }
+  ]
+}

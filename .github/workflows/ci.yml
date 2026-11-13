@@ -1,0 +1,69 @@
+name: CI
+on:
+  push:
+    branches: [main]
+  pull_request:
+
+permissions:
+  contents: read
+
+jobs:
+  test:
+    strategy:
+      fail-fast: false
+      matrix:
+        os: [windows-latest, macos-15]
+    runs-on: ${{ matrix.os }}
+    steps:
+      - uses: actions/checkout@v4
+      - uses: dtolnay/rust-toolchain@1.94.1 # keep in step with rust-toolchain.toml
+        with:
+          components: clippy, rustfmt
+      - uses: Swatinem/rust-cache@v2
+        with:
+          prefix-key: v1-rust
+          # Keep the compile cache even when a test fails, so a red run does not
+          # cost the next run a full rebuild.
+          cache-on-failure: true
+      # sherpa-rs-sys downloads the sherpa-onnx / onnxruntime libraries into the
+      # OS cache dir, outside target/. On a rust-cache hit its build script does
+      # not rerun, so those libraries must be cached separately or linking fails.
+      - name: Cache sherpa-onnx binaries
+        uses: actions/cache@v4
+        with:
+          path: |
+            ~/Library/Caches/sherpa-rs
+            ~/AppData/Local/sherpa-rs
+          key: sherpa-rs-${{ runner.os }}-${{ runner.arch }}-${{ hashFiles('Cargo.lock') }}
+          restore-keys: |
+            sherpa-rs-${{ runner.os }}-${{ runner.arch }}-
+      - name: libclang (Windows)
+        if: runner.os == 'Windows'
+        shell: bash
+        run: echo "LIBCLANG_PATH=C:\Program Files\LLVM\bin" >> "$GITHUB_ENV"
+      - uses: pnpm/action-setup@v4
+        with:
+          version: 11
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 22
+          cache: pnpm
+          cache-dependency-path: apps/desktop/pnpm-lock.yaml
+      - name: Frontend
+        working-directory: apps/desktop
+        run: |
+          pnpm install --frozen-lockfile
+          pnpm typecheck
+          pnpm test
+          pnpm vite:build
+      # The sherpa-rs-sys build script copies the prebuilt sherpa-onnx / onnxruntime
+      # libraries next to the test executables. After a rust-cache hit that script is
+      # considered up to date and never runs, and the asr-local tests then abort with
+      # STATUS_DLL_NOT_FOUND / "Library not loaded". Cleaning just that package makes
+      # the script rerun from the cached download (seconds, no network on a cache hit).
+      - name: Rust tests
+        run: |
+          cargo clean -p sherpa-rs-sys
+          cargo test --workspace
+      - name: Clippy
+        run: cargo clippy --workspace --all-targets -- -D warnings

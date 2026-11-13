@@ -1,0 +1,346 @@
+<!DOCTYPE html>
+<html lang="en" data-dl="soon">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>Dettino · Hold Ctrl+Space. Talk. It’s typed.</title>
+<meta name="description" content="Private dictation for your computer. Hold Ctrl+Space in any app, talk, and clean, punctuated text lands at your cursor. Runs on your computer by default; cloud models only if you choose. Windows 11 and macOS.">
+<meta name="theme-color" content="#2F5FDB">
+<meta name="color-scheme" content="light">
+<meta property="og:title" content="Dettino · Hold Ctrl+Space. Talk. It’s typed.">
+<meta property="og:description" content="Dictation for your computer. You choose who hears you: on-device models, your own keys, or a mix.">
+<meta property="og:type" content="website">
+<link rel="icon" type="image/svg+xml" href="icon.svg">
+<link rel="preload" href="fonts/archivo-latin.woff2" as="font" type="font/woff2" crossorigin>
+<link rel="stylesheet" href="site.css">
+<script>
+// Download links: the files .github/workflows/release.yml attaches to the GitHub Release for the tag.
+// Check both URLs (version and file names) against the published release.
+// Set `live: false` to go back to "coming soon"; ?dl=preview then still shows the buttons.
+// A platform whose link is empty shows "tell me when it's out" instead of a download.
+window.DETTINO_DOWNLOADS = {
+  live: true,
+  version: "0.2.0",
+  windows: "https://github.com/hubertmk/dettino/releases/download/v0.2.0/Dettino_0.2.0_x64-setup.exe",
+  mac: "https://github.com/hubertmk/dettino/releases/download/v0.2.0/Dettino_0.2.0_aarch64.dmg"
+};
+(function () {
+  var d = window.DETTINO_DOWNLOADS;
+  var on = d.live || /[?&]dl=preview\b/.test(location.search);
+  if (!on) d.windows = d.mac = "";
+  document.documentElement.setAttribute("data-dl", d.windows || d.mac ? "ready" : "soon");
+  document.documentElement.setAttribute("data-os", /Mac|iPhone|iPad/.test(navigator.platform || navigator.userAgent) ? "mac" : "win");
+})();
+</script>
+</head>
+<body>
+<a class="skip" href="#main">Skip to content</a>
+
+<header class="band" id="top">
+  <div class="wrap band-in">
+    <a class="lockup" href="./" aria-label="Dettino, home">
+      <svg class="mark" viewBox="0 0 1024 1024" aria-hidden="true"><rect x="64" y="64" width="896" height="896" rx="208" fill="#fff"/><path d="M319 716L250 846L407 777Z" fill="#2F5FDB" stroke="#2F5FDB" stroke-width="22" stroke-linejoin="round"/><circle cx="478" cy="582" r="208" fill="#2F5FDB"/><rect x="606" y="182" width="160" height="612" rx="80" fill="#2F5FDB"/><circle cx="478" cy="582" r="88" fill="#fff"/></svg>
+      <span>Dettino</span>
+    </a>
+    <nav aria-label="Sections">
+      <a href="#how">How it works</a>
+      <a href="#models">Models</a>
+      <a href="#privacy">Privacy</a>
+      <a href="#faq">FAQ</a>
+    </nav>
+    <a class="band-gh" href="https://github.com/hubertmk/dettino" target="_blank" rel="noopener" aria-label="Dettino on GitHub" title="Dettino on GitHub">
+      <svg viewBox="0 0 24 24" aria-hidden="true"><path d="M12 .5C5.65.5.5 5.65.5 12c0 5.08 3.29 9.39 7.86 10.91.58.1.79-.25.79-.56v-2.17c-3.2.7-3.87-1.37-3.87-1.37-.52-1.33-1.28-1.68-1.28-1.68-1.04-.71.08-.7.08-.7 1.15.08 1.76 1.19 1.76 1.19 1.03 1.76 2.69 1.25 3.35.96.1-.75.4-1.25.73-1.54-2.55-.29-5.24-1.28-5.24-5.69 0-1.26.45-2.28 1.19-3.09-.12-.29-.52-1.46.11-3.05 0 0 .97-.31 3.17 1.18a11 11 0 0 1 5.78 0c2.2-1.49 3.17-1.18 3.17-1.18.63 1.59.23 2.76.11 3.05.74.81 1.19 1.83 1.19 3.09 0 4.42-2.69 5.39-5.26 5.68.41.36.78 1.06.78 2.13v3.16c0 .31.21.67.8.56A11.5 11.5 0 0 0 23.5 12C23.5 5.65 18.35.5 12 .5Z"/></svg>
+    </a>
+    <a class="band-bmc" href="https://buymeacoffee.com/hubertmk" target="_blank" rel="noopener" aria-label="Buy me a coffee" title="Buy me a coffee">
+      <svg viewBox="0 0 24 24" aria-hidden="true"><path d="M20.216 6.415l-.132-.666c-.119-.598-.388-1.163-1.001-1.379-.197-.069-.42-.098-.57-.241-.152-.143-.196-.366-.231-.572-.065-.378-.125-.756-.192-1.133-.057-.325-.102-.69-.25-.987-.195-.4-.597-.634-.996-.788a5.723 5.723 0 00-.626-.194c-1-.263-2.05-.36-3.077-.416a25.834 25.834 0 00-3.7.062c-.915.083-1.88.184-2.75.5-.318.116-.646.256-.888.501-.297.302-.393.77-.177 1.146.154.267.415.456.692.58.36.162.737.284 1.123.366 1.075.238 2.189.331 3.287.37 1.218.05 2.437.01 3.65-.118.299-.033.598-.073.896-.119.352-.054.578-.513.474-.834-.124-.383-.457-.531-.834-.473-.466.074-.96.108-1.382.146-1.177.08-2.358.082-3.536.006a22.228 22.228 0 01-1.157-.107c-.086-.01-.18-.025-.258-.036-.243-.036-.484-.08-.724-.13-.111-.027-.111-.185 0-.212h.005c.277-.06.557-.108.838-.147h.002c.131-.009.263-.032.394-.048a25.076 25.076 0 013.426-.12c.674.019 1.347.067 2.017.144l.228.031c.267.04.533.088.798.145.392.085.895.113 1.07.542.055.137.08.288.111.431l.319 1.484a.237.237 0 01-.199.284h-.003c-.037.006-.075.01-.112.015a36.704 36.704 0 01-4.743.295 37.059 37.059 0 01-4.699-.304c-.14-.017-.293-.042-.417-.06-.326-.048-.649-.108-.973-.161-.393-.065-.768-.032-1.123.161-.29.16-.527.404-.675.701-.154.316-.199.66-.267 1-.069.34-.176.707-.135 1.056.087.753.613 1.365 1.37 1.502a39.69 39.69 0 0011.343.376.483.483 0 01.535.53l-.071.697-1.018 9.907c-.041.41-.047.832-.125 1.237-.122.637-.553 1.028-1.182 1.171-.577.131-1.165.2-1.756.205-.656.004-1.31-.025-1.966-.022-.699.004-1.556-.06-2.095-.58-.475-.458-.54-1.174-.605-1.793l-.731-7.013-.322-3.094c-.037-.351-.286-.695-.678-.678-.336.015-.718.3-.678.679l.228 2.185.949 9.112c.147 1.344 1.174 2.068 2.446 2.272.742.12 1.503.144 2.257.156.966.016 1.942.053 2.892-.122 1.408-.258 2.465-1.198 2.616-2.657.34-3.332.683-6.663 1.024-9.995l.215-2.087a.484.484 0 01.39-.426c.402-.078.787-.212 1.074-.518.455-.488.546-1.124.385-1.766zm-1.478.772c-.145.137-.363.201-.578.233-2.416.359-4.866.54-7.308.46-1.748-.06-3.477-.254-5.207-.498-.17-.024-.353-.055-.47-.18-.22-.236-.111-.71-.054-.995.052-.26.152-.609.463-.646.484-.057 1.046.148 1.526.22.577.088 1.156.159 1.737.212 2.48.226 5.002.19 7.472-.14.45-.06.899-.13 1.345-.21.399-.072.84-.206 1.08.206.166.281.188.657.162.974a.544.544 0 01-.169.364zm-6.159 3.9c-.862.37-1.84.788-3.109.788a5.884 5.884 0 01-1.569-.217l.877 9.004c.065.78.717 1.38 1.5 1.38 0 0 1.243.065 1.658.065.447 0 1.786-.065 1.786-.065.783 0 1.434-.6 1.499-1.38l.94-9.95a3.996 3.996 0 00-1.322-.238c-.826 0-1.491.284-2.26.613z"/></svg>
+    </a>
+    <a class="band-cta" href="#download">Download</a>
+  </div>
+</header>
+
+<main id="main">
+
+<section class="hero" aria-labelledby="hero-h">
+  <div class="wrap hero-top">
+    <h1 id="hero-h"><span class="l1">Hold <span class="hk">Ctrl</span><span class="hk-plus">+</span><span class="hk">Space</span>.</span><br>Talk. It’s typed<span class="cur" aria-hidden="true"></span></h1>
+    <div class="hero-side">
+      <p class="lead">Mac and Windows. Your voice stays on your computer.</p>
+      <ul class="claims">
+        <li>Private by default</li>
+        <li>Open source</li>
+        <li>Free, no account</li>
+      </ul>
+      <div class="acts ready-only">
+        <a class="plate primary" data-dl="windows" href="#download"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M12 4v11m0 0-4.5-4.5M12 15l4.5-4.5M5 19.5h14"/></svg>Download for Windows</a>
+        <a class="plate" data-dl="mac" href="#download"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M12 4v11m0 0-4.5-4.5M12 15l4.5-4.5M5 19.5h14"/></svg>Download for Mac</a>
+      </div>
+      <div class="acts soon-only">
+        <a class="plate primary" href="mailto:ciao@dettino.com?subject=Tell%20me%20when%20Dettino%20is%20out">Tell me when it’s out<svg viewBox="0 0 24 24" aria-hidden="true"><path d="M5 12h13m0 0-5-5m5 5-5 5"/></svg></a>
+        <a class="textlink" href="#how">See how it works<svg viewBox="0 0 24 24" aria-hidden="true"><path d="M12 5v13m0 0-5-5m5 5 5-5"/></svg></a>
+      </div>
+    </div>
+  </div>
+
+  <div class="wrap">
+    <div class="board" id="board">
+      <div class="b-head">
+        <div class="b-title"><strong>Partenze</strong><span>Departures, from your voice to your cursor</span></div>
+        <div class="clock" aria-hidden="true"><span class="flaps" id="clock"></span></div>
+      </div>
+      <div class="b-cols" aria-hidden="true">
+        <span>Time</span><span>To</span><span class="col-text">What lands at your cursor</span><span>Status</span>
+      </div>
+
+      <div class="row live" id="live">
+        <span class="flaps sig" data-k="time" aria-hidden="true"></span>
+        <span class="to" data-k="to"></span>
+        <span class="col-text hint" aria-hidden="true">Example dictations, played on this page</span>
+        <span class="flaps sig" data-k="status" aria-hidden="true"></span>
+        <div class="live-text" aria-hidden="true"><span class="flaps big" data-k="text"></span></div>
+        <p class="sr" id="live-sr"></p>
+      </div>
+      <div id="hist"></div>
+
+      <div class="b-foot">
+        <button class="hold" id="hold" type="button" aria-describedby="hold-d">
+          <kbd>Ctrl</kbd><span class="plus" aria-hidden="true">+</span><kbd class="space"><i aria-hidden="true"></i>Space</kbd>
+          <span class="hold-l">Hold to talk<small>Let go, and it’s pasted</small></span>
+        </button>
+        <span class="pill" id="pill-wrap" aria-hidden="true"><svg id="pill" viewBox="0 0 240 40" preserveAspectRatio="xMidYMid meet"><path d=""/></svg><span class="pill-l">The line</span></span>
+        <p class="foot-note" id="hold-d">Press and hold the keys, here or on your keyboard. Click a row to see what was said.</p>
+      </div>
+    </div>
+  </div>
+</section>
+
+<section class="sec" id="how" aria-labelledby="how-h">
+  <div class="wrap grid">
+    <div class="sec-head">
+      <p class="kicker" aria-hidden="true"><span class="plat">1</span>How it works</p>
+      <h2 class="sign" id="how-h">From your voice to your cursor.</h2>
+      <p>One trip, five stops. Nothing to open, no window to write in: the text arrives in the app you were already using.</p>
+    </div>
+    <ol class="timetable">
+      <li>
+        <span class="when">Hold</span>
+        <div><h3>Ctrl + Space, in any app</h3><p>Mail, chat, documents, the code editor, a form in the browser. The microphone keeps the last 1.5 seconds, so your first word is never clipped.</p></div>
+      </li>
+      <li>
+        <span class="when">Talk</span>
+        <div><h3>Say it the way you’d say it</h3><p>Ums, restarts and spoken numbers are fine. Say “comma” or “new paragraph” if you like; the obvious punctuation comes by itself. The recording is kept safe until the text lands.</p></div>
+      </li>
+      <li>
+        <span class="when">Let go</span>
+        <div><h3>Transcribed</h3><p>On your computer with Parakeet or Whisper, or by the speech provider you picked. 7.4 seconds of speech took about 230 ms on the development PC’s processor.</p></div>
+      </li>
+      <li>
+        <span class="when">Cleanup</span>
+        <div><h3>Cleaned, not rewritten</h3><p>Fillers go; numbers, names and punctuation get fixed; your word list spells what only you say. If the cleanup would change too much, Dettino pastes exactly what you said instead. Local cleanup on a laptop graphics card: about 240 ms.</p></div>
+      </li>
+      <li>
+        <span class="when">Pasted</span>
+        <div><h3>Right where you were typing</h3><p>The text lands at your cursor and your clipboard is put back the way it was. Changed your mind? One shortcut undoes the cleanup, another pastes the last one again.</p></div>
+      </li>
+    </ol>
+    <p class="note">Times measured warm on the development machine. Yours depend on your hardware and the providers you choose.</p>
+  </div>
+</section>
+
+<section class="sec" id="models" aria-labelledby="models-h">
+  <div class="wrap grid">
+    <div class="sec-head">
+      <p class="kicker" aria-hidden="true"><span class="plat">2</span>Models</p>
+      <h2 class="sign" id="models-h">You choose who hears you.</h2>
+      <p>Every dictation makes two stops: one model turns sound into words, another tidies them. Keep both on your computer, send them to providers with your own keys, or mix.</p>
+    </div>
+    <div class="routes">
+      <div class="route-pick" role="group" aria-label="Route">
+        <button type="button" data-route="private" aria-pressed="true"><b>P</b><span>Private<small>everything on this computer</small></span></button>
+        <button type="button" data-route="balanced" aria-pressed="false"><b>B</b><span>Balanced<small>local hearing, cloud cleanup</small></span></button>
+        <button type="button" data-route="cloud" aria-pressed="false"><b>C</b><span>Cloud<small>cloud hearing, cloud cleanup</small></span></button>
+      </div>
+      <div class="map" id="map" aria-hidden="true"></div>
+      <div class="route-say" aria-live="polite">
+        <p data-for="private">Audio and text never leave this computer. Setup downloads the speech model and installs a local cleanup model for you, with one progress bar. On Windows, best with a dedicated graphics card: about 1 to 2 seconds after you let go.</p>
+        <p data-for="balanced" hidden>The recording stays here unless on-device transcription fails; only the text goes to your cleanup provider. About a second, and you pay for cleanup tokens only.</p>
+        <p data-for="cloud" hidden>Nothing to install: one OpenAI key covers both stops. Audio goes to your transcription provider, text to your cleanup provider. The speed depends on your connection; under a second on a good one.</p>
+        <p class="note">Or pair any providers yourself in Settings, with automatic fallback when one fails. Keys stay in the macOS Keychain or Windows Credential Manager.</p>
+      </div>
+    </div>
+  </div>
+</section>
+
+<section class="notice-sec" id="privacy" aria-labelledby="privacy-h">
+  <div class="wrap">
+    <div class="enamel">
+      <div class="enamel-in">
+        <h2 id="privacy-h">Nothing leaves your computer unless you send it.</h2>
+        <ul class="facts">
+          <li><strong>No account, no telemetry, no analytics, no backend.</strong> Dettino never takes screenshots.</li>
+          <li><strong>Only what you send to providers you set up</strong> leaves the machine. “What would be sent?” shows the exact payload for any app.</li>
+          <li><strong>Never read:</strong> password fields, browser address bars, and apps you mark “Never dictate”.</li>
+          <li><strong>Screen context is yours to limit.</strong> Send it only to providers on this computer, or switch it off.</li>
+          <li><strong>History is encrypted</strong> with XChaCha20-Poly1305. The key and your API keys live in the system keychain.</li>
+          <li><strong>The clipboard is borrowed for a moment,</strong> kept out of clipboard history, and put back.</li>
+        </ul>
+        <a class="enamel-link" href="privacy.html">Read the full privacy notes<svg viewBox="0 0 24 24" aria-hidden="true"><path d="M5 12h13m0 0-5-5m5 5-5 5"/></svg></a>
+      </div>
+    </div>
+  </div>
+</section>
+
+<section class="sec" id="keys" aria-labelledby="keys-h">
+  <div class="wrap grid">
+    <div class="sec-head">
+      <p class="kicker" aria-hidden="true"><span class="plat">3</span>Shortcuts</p>
+      <h2 class="sign" id="keys-h">Five keys to know.</h2>
+      <p>You’ll use the first one all day. Change any of them in Settings. On a Mac, Ctrl is Control and Alt is Option.</p>
+    </div>
+    <ul class="keys">
+      <li><span class="combo"><kbd>Ctrl</kbd><kbd>Space</kbd></span><div><h3>Hold to talk</h3><p>Let go and it’s pasted. A quick tap still does what it always did in your apps.</p></div></li>
+      <li><span class="combo"><kbd>Ctrl</kbd><kbd>Shift</kbd><kbd>Space</kbd></span><div><h3>Hands-free</h3><p>Talk as long as you like, up to 20 minutes. Space finishes, Esc throws it away.</p></div></li>
+      <li><span class="combo"><kbd>Ctrl</kbd><kbd>Alt</kbd><kbd>Space</kbd></span><div><h3>Edit by voice</h3><p>Select some text and say what should change.</p></div></li>
+      <li><span class="combo"><kbd>Ctrl</kbd><kbd>Alt</kbd><kbd>Z</kbd></span><div><h3>Undo the cleanup</h3><p>Get exactly what you said instead, up to a minute later.</p></div></li>
+      <li><span class="combo"><kbd>Ctrl</kbd><kbd>Alt</kbd><kbd>V</kbd></span><div><h3>Paste the last one again</h3><p>For when the cursor moved before the text arrived.</p></div></li>
+    </ul>
+
+    <div class="sec-head sub">
+      <h2 class="h-sub">And the small things.</h2>
+    </div>
+    <ul class="things">
+      <li><h3>Your words</h3><p>Names and terms only you use, spelled right. Dettino suggests the ones it saw you correct.</p></li>
+      <li><h3>Snippets</h3><p>Say a short phrase, get your address, a signature or the reply you send every week.</p></li>
+      <li><h3>App rules</h3><p>Settings per app, including never dictating in one at all.</p></li>
+      <li><h3>History</h3><p>Every dictation, raw and cleaned, encrypted on your computer. Retry from there if a provider was offline.</p></li>
+      <li><h3>The line</h3><p>A thin line at the bottom of the screen moves with your voice. Hover it to pause, undo or paste the last one. Drag it anywhere.</p></li>
+      <li><h3>Pasted as heard</h3><p>If the cleanup would change too much, you get your own words, untouched. Nothing is lost.</p></li>
+    </ul>
+  </div>
+</section>
+
+<section class="sec platforms-sec" id="download" aria-labelledby="dl-h">
+  <div class="wrap grid">
+    <div class="sec-head">
+      <p class="kicker" aria-hidden="true"><span class="plat">4</span>Download</p>
+      <h2 class="sign" id="dl-h">Pronto? Pick your platform.</h2>
+      <p class="soon-only">The first public builds are coming soon. Leave a note and we’ll write when yours is out.</p>
+      <p class="ready-only">Download, open, and the setup walks you through the rest in five steps.</p>
+    </div>
+    <div class="platforms">
+      <article class="platform" data-os-card="win" aria-labelledby="p-win">
+        <header class="psign"><h3 id="p-win">Windows 11</h3><span class="yours">Your system</span></header>
+        <dl class="pspec">
+          <div class="key"><dt>Graphics card</dt><dd><strong>Recommended for Private mode.</strong> With a dedicated graphics card, the local cleanup takes about a quarter of a second. Without one, Dettino runs on the processor, more slowly, and setup suggests Balanced or Cloud instead.</dd></div>
+          <div><dt>Download</dt><dd>Installer, about 9 MB, 64-bit. Installs just for you, no admin rights needed.</dd></div>
+          <div><dt>Shortcut</dt><dd>Hold <kbd>Ctrl</kbd> <kbd>Space</kbd>. Can start with Windows, so the line is always there.</dd></div>
+        </dl>
+        <div class="pact">
+          <a class="plate primary ready-only" data-dl="windows" href="#download"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M12 4v11m0 0-4.5-4.5M12 15l4.5-4.5M5 19.5h14"/></svg>Download for Windows</a>
+          <a class="plate primary soon-only" href="mailto:ciao@dettino.com?subject=Tell%20me%20when%20Dettino%20for%20Windows%20is%20out">Tell me when it’s out for Windows</a>
+        </div>
+      </article>
+      <article class="platform" data-os-card="mac" aria-labelledby="p-mac">
+        <header class="psign"><h3 id="p-mac">macOS</h3><span class="yours">Your system</span></header>
+        <dl class="pspec">
+          <div class="key"><dt>Permissions</dt><dd><strong>Three switches, asked for once.</strong> Microphone, Accessibility (for the shortcut, pasting and screen context) and, on some macOS versions, Input Monitoring. Setup shows each one’s status live.</dd></div>
+          <div><dt>Download</dt><dd>Signed disk image for Macs with Apple Silicon. Local models run on the chip itself, nothing extra needed.</dd></div>
+          <div><dt>Shortcut</dt><dd>Hold <kbd>Control</kbd> <kbd>Space</kbd>. If that also switches your keyboard language, a tap still switches it; only a hold dictates.</dd></div>
+        </dl>
+        <div class="pact">
+          <a class="plate primary ready-only" data-dl="mac" href="#download"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M12 4v11m0 0-4.5-4.5M12 15l4.5-4.5M5 19.5h14"/></svg>Download for Mac</a>
+          <a class="plate primary soon-only" href="mailto:ciao@dettino.com?subject=Tell%20me%20when%20Dettino%20for%20Mac%20is%20out">Tell me when it’s out for Mac</a>
+        </div>
+      </article>
+    </div>
+    <p class="note">On both: Private mode downloads the speech model (about 480 MB) and a local cleanup model on first start. Cloud mode needs only an OpenAI key.</p>
+  </div>
+</section>
+
+<section class="sec" id="faq" aria-labelledby="faq-h">
+  <div class="wrap grid">
+    <div class="sec-head">
+      <p class="kicker" aria-hidden="true"><span class="plat">5</span>FAQ</p>
+      <h2 class="sign" id="faq-h">Questions.</h2>
+      <p>Anything else: <a href="mailto:ciao@dettino.com">ciao@dettino.com</a></p>
+    </div>
+    <div class="faq">
+      <details>
+        <summary>Does it work offline?</summary>
+        <p>In Private mode, yes: both models run on your computer. Setup needs a connection once, to download them.</p>
+      </details>
+      <details>
+        <summary>Which apps does it work in?</summary>
+        <p>Any app where you can type: the browser, Word, Outlook, Slack, a code editor, Notepad. Dettino pastes at the cursor. One exception on Windows: if an app runs as administrator and Dettino doesn’t, Windows blocks the paste, so the text waits on your clipboard instead.</p>
+      </details>
+      <details>
+        <summary>Do I need a graphics card?</summary>
+        <p>Not required, but on Windows it makes a real difference. Speech recognition runs on the processor either way. The local cleanup in Private mode is where a dedicated graphics card helps: about a quarter of a second on a laptop graphics card, noticeably slower without one. On a PC without one, setup tells you, and Balanced or Cloud is the better fit. On a Mac, Apple Silicon runs the local models itself.</p>
+      </details>
+      <details>
+        <summary>Which languages can I dictate in?</summary>
+        <p>That depends on the speech model. Parakeet, the fast on-device default, is for English. Whisper, on your computer or in the cloud, understands many more.</p>
+      </details>
+      <details>
+        <summary>Which Macs are supported?</summary>
+        <p>Macs with Apple Silicon. The setup asks for three permissions with live status: Microphone, Accessibility (for the shortcut, pasting and screen context) and, on some macOS versions, Input Monitoring.</p>
+      </details>
+      <details>
+        <summary>What does the keyboard hook see?</summary>
+        <p>Dettino watches for your shortcut only. Every other key passes straight through and is never stored, logged or sent anywhere.</p>
+      </details>
+      <details>
+        <summary>Why “Dettino”?</summary>
+        <p>From the Italian <i lang="it">dettare</i>, to dictate. When setup is done, the line at the bottom of your screen says <i lang="it">Pronto!</i></p>
+      </details>
+    </div>
+  </div>
+</section>
+
+<section class="sec" id="support" aria-labelledby="support-h">
+  <div class="wrap grid">
+    <div class="sec-head">
+      <p class="kicker" aria-hidden="true"><span class="plat">6</span>Support</p>
+      <h2 class="sign" id="support-h">Un caffè?</h2>
+      <p>Dettino is free and open source. No accounts, no subscriptions, nothing to upgrade to.</p>
+    </div>
+    <div class="ticket">
+      <div class="ticket-main">
+        <p class="ticket-k">If you like it</p>
+        <h3>Help keep Dettino running.</h3>
+        <p>If it saves you some typing, you can buy me a coffee. It pays for the signing certificates and the test machines, and it makes my day. Not in the mood? A star on GitHub or telling a friend helps just as much. <span lang="it">Grazie!</span></p>
+        <div class="ticket-acts">
+          <a class="plate bmc" href="https://buymeacoffee.com/hubertmk" target="_blank" rel="noopener"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M5 9h12v5a5 5 0 0 1-5 5h-2a5 5 0 0 1-5-5V9Zm12 1h1.5a2.5 2.5 0 0 1 0 5H17M9 3.5c0 1 .8 1.3.8 2.3M12.5 3.5c0 1 .8 1.3.8 2.3"/></svg>Buy me a coffee</a>
+          <a class="textlink" href="https://github.com/hubertmk/dettino" target="_blank" rel="noopener">Star it on GitHub<svg viewBox="0 0 24 24" aria-hidden="true"><path d="M5 12h13m0 0-5-5m5 5-5 5"/></svg></a>
+        </div>
+      </div>
+      <div class="ticket-stub" aria-hidden="true">
+        <span class="ticket-k">Biglietto</span>
+        <strong>Caffè</strong>
+        <span class="ticket-row"><span>Qty</span><b>1</b></span>
+        <span class="ticket-row"><span>Class</span><b>Espresso</b></span>
+        <span class="ticket-row"><span>Valid</span><b>Any day</b></span>
+      </div>
+    </div>
+  </div>
+</section>
+
+</main>
+
+<footer class="band foot">
+  <div class="wrap foot-in">
+    <a class="lockup" href="#top" aria-label="Dettino, back to top">
+      <svg class="mark" viewBox="0 0 1024 1024" aria-hidden="true"><rect x="64" y="64" width="896" height="896" rx="208" fill="#fff"/><path d="M319 716L250 846L407 777Z" fill="#2F5FDB" stroke="#2F5FDB" stroke-width="22" stroke-linejoin="round"/><circle cx="478" cy="582" r="208" fill="#2F5FDB"/><rect x="606" y="182" width="160" height="612" rx="80" fill="#2F5FDB"/><circle cx="478" cy="582" r="88" fill="#fff"/></svg>
+      <span>Dettino</span>
+    </a>
+    <p class="foot-say">Dictation for your computer. <span lang="it">Ciao!</span></p>
+    <nav class="foot-nav" aria-label="Footer">
+      <a href="privacy.html">Privacy</a>
+      <a href="https://buymeacoffee.com/hubertmk" target="_blank" rel="noopener">Buy me a coffee</a>
+      <a href="mailto:ciao@dettino.com">ciao@dettino.com</a>
+    </nav>
+  </div>
+</footer>
+
+<script src="board.js" defer></script>
+</body>
+</html>

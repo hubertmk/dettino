@@ -1,0 +1,36 @@
+@import "../styles/tokens.css";
+@import "./classic.css";
+@import "./line.css";
+
+/* Shared by both pill styles. The style-specific rules live in classic.css (dot + rounded
+   pill) and line.css (one line on a canvas), each scoped to `.stage.classic` / `.stage.line`. */
+:root {
+  /* classic: the pill floats over other apps, slightly translucent with a stronger shadow */
+  --surface: rgba(255, 255, 255, 0.97);
+  --border: rgba(0, 0, 0, 0.09);
+  --shadow: 0 4px 16px rgba(0, 0, 0, 0.16), 0 1px 3px rgba(0, 0, 0, 0.08);
+  --level: 0;
+  /* line: words get a halo of the surface tone instead of a card */
+  --halo: rgba(255, 255, 255, 0.85);
+  font-family: var(--font-ui);
+}
+@media (prefers-color-scheme: dark) {
+  :root {
+    --surface: rgba(28, 28, 30, 0.97);
+    --border: rgba(255, 255, 255, 0.11);
+    --shadow: 0 4px 16px rgba(0, 0, 0, 0.45), 0 1px 3px rgba(0, 0, 0, 0.3);
+    --halo: rgba(0, 0, 0, 0.7);
+  }
+}
+
+* { box-sizing: border-box; }
+html, body, #pill-root { width: 100%; height: 100%; margin: 0; background: transparent; user-select: none; -webkit-user-select: none; cursor: default; overflow: hidden; }
+
+.stage { position: absolute; inset: 0; }
+
+@keyframes grow { from { transform: scale(0.6); opacity: 0; } to { transform: scale(1); opacity: 1; } }
+@keyframes rise { from { transform: translateY(4px); opacity: 0; } to { transform: none; opacity: 1; } }
+@keyframes fade { from { opacity: 0; } to { opacity: 1; } }
+@keyframes pulse { 0%, 100% { transform: scale(0.7); opacity: 0.45; } 50% { transform: scale(1); opacity: 1; } }
+@keyframes spin { to { transform: rotate(360deg); } }
+@keyframes labin { from { opacity: 0; filter: blur(2px); transform: translateY(3px); } to { opacity: 1; filter: none; transform: none; } }
