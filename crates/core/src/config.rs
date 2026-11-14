@@ -205,13 +205,16 @@ pub enum SoundStyle {
     WarmPop,
 }
 
-/// The accent palette for buttons, toggles and the listening pill. The hex values live in
+/// The accent palette for buttons, toggles and the pill (Seafoam keeps the listening pill blue). The hex values live in
 /// `apps/desktop/src/styles/tokens.css` and `src/lib/theme.ts`.
 #[derive(Debug, Clone, Copy, PartialEq, Eq, Serialize, Deserialize, Default)]
 #[serde(rename_all = "snake_case")]
 pub enum Accent {
-    /// The default since 2026-10-20: blue, so that red only ever means an error.
+    /// The brand colour and the default since 2026-11-14: seafoam buttons with near-black text.
+    /// The pill still listens in blue and flashes seafoam after a paste.
     #[default]
+    Surf,
+    /// Blue; the default from 2026-10-20 to 2026-11-14.
     Cobalt,
     Ultramarine,
     Indigo,
@@ -449,7 +452,7 @@ impl Default for Settings {
             sound_style: SoundStyle::Classic,
             pill_style: PillStyle::Line,
             success_animation: SuccessAnimation::Flash,
-            accent: Accent::Cobalt,
+            accent: Accent::Surf,
             launch_at_login: true,
             start_ollama: true,
             paused: false,
@@ -640,7 +643,7 @@ mod tests {
         // Settings files without a saved pill style get the One line.
         assert_eq!(partial.pill_style, PillStyle::Line);
         assert_eq!(partial.success_animation, SuccessAnimation::Flash);
-        assert_eq!(partial.accent, Accent::Cobalt);
+        assert_eq!(partial.accent, Accent::Surf);
         assert_eq!(partial.sound_style, SoundStyle::Classic);
         let line: Settings =
             serde_json::from_str(r#"{"pill_style": "classic", "success_animation": "check_word", "sound_style": "warm_pop"}"#).unwrap();

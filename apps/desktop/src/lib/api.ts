@@ -13,7 +13,7 @@ export type PillStyle = "classic" | "line";
 /** Voice of the start / stop / hands-free / error sounds (crates/platform/src/tones.rs). */
 export type SoundStyle = "classic" | "soft_pluck" | "mallet" | "glass" | "warm_pop";
 export type SuccessAnimation = "flash" | "check" | "check_word";
-export type Accent = "cobalt" | "ultramarine" | "indigo" | "lettera" | "plum" | "orchid" | "graphite" | "red" | "system";
+export type Accent = "surf" | "cobalt" | "ultramarine" | "indigo" | "lettera" | "plum" | "orchid" | "graphite" | "red" | "system";
 export type ProviderType =
   | "whisper_local"
   | "parakeet_local"

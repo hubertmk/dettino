@@ -2,13 +2,35 @@
    Every text/surface pair here meets WCAG AA (4.5:1) in both themes.
    The accent is a palette the user picks in Settings (`accent`); src/lib/theme.ts sets
    `data-accent` on the root and, for "System", --os-accent-light / --os-accent-dark /
-   --os-accent-text-dark from the OS accent, already clamped to AA. Cobalt is the default,
-   so red only ever means an error. Keep the hex values in sync with ACCENTS in theme.ts. */
+   --os-accent-text-dark from the OS accent, already clamped to AA. Seafoam is the default
+   (the brand colour since 2026-11-14), so red only ever means an error. Keep the hex values
+   in sync with ACCENTS in theme.ts.
+   Seafoam is too light for white text or for text on white, so it splits the accent in the
+   light theme: --pal-light is the deep seafoam for text, icons and rings, --pal-light-fill
+   the bright seafoam for buttons and toggles, with near-black text on it. It also keeps the
+   pill's voice blue while it listens and flashes seafoam after a paste. The other palettes
+   leave those extras unset and fall back to their single colour, white text and the success
+   green. */
 :root {
-  --pal-light: #2f5fdb;
-  --pal-dark: #6b9bff;
-  --pal-dark-text: #0b1530;
+  --pal-light: #0a7560;
+  --pal-dark: #2ec4a0;
+  --pal-dark-text: #0b0d0c;
+  --pal-light-fill: #2ec4a0;
+  --pal-light-text: #0b0d0c;
+  --pal-mark: #0b0d0c;
+  --pal-voice-light: #2f5fdb;
+  --pal-voice-dark: #6b9bff;
+  --pal-done: #2ec4a0;
 }
+:root[data-accent]:not([data-accent="surf"]) {
+  --pal-light-fill: initial;
+  --pal-light-text: initial;
+  --pal-mark: initial;
+  --pal-voice-light: initial;
+  --pal-voice-dark: initial;
+  --pal-done: initial;
+}
+:root[data-accent="cobalt"] { --pal-light: #2f5fdb; --pal-dark: #6b9bff; --pal-dark-text: #0b1530; }
 :root[data-accent="ultramarine"] { --pal-light: #2b3fd6; --pal-dark: #8794ff; --pal-dark-text: #0b1033; }
 :root[data-accent="indigo"] { --pal-light: #4f46e5; --pal-dark: #9590ff; --pal-dark-text: #120f3a; }
 :root[data-accent="lettera"] { --pal-light: #0b7285; --pal-dark: #3bc3d4; --pal-dark-text: #03242a; }
@@ -27,9 +49,15 @@
   --text: #1b1b1f;
   --text-2: #5f5f66;
   --text-3: #6a6a72;
+  /* --accent: text, icons, rings and thin lines. --accent-fill: behind --accent-text (buttons, toggles, badges). */
   --accent: var(--os-accent-light, var(--pal-light));
-  --accent-text: #ffffff;
+  --accent-fill: var(--os-accent-light, var(--pal-light-fill, var(--pal-light)));
+  --accent-text: var(--pal-light-text, #ffffff);
+  --accent-mark: var(--pal-mark, #ffffff);
   --accent-soft: color-mix(in srgb, var(--accent) 10%, transparent);
+  /* The pill: --voice while it listens, --done for the flash after a paste. */
+  --voice: var(--pal-voice-light, var(--accent));
+  --done: var(--pal-done, var(--success));
   --success: #17784b;
   --success-soft: rgba(23, 120, 75, 0.1);
   --warning: #8f5e12;
@@ -82,8 +110,10 @@
     --text-2: #a0a0a8;
     --text-3: #92929b;
     --accent: var(--os-accent-dark, var(--pal-dark));
+    --accent-fill: var(--accent);
     --accent-text: var(--os-accent-text-dark, var(--pal-dark-text));
     --accent-soft: color-mix(in srgb, var(--accent) 14%, transparent);
+    --voice: var(--pal-voice-dark, var(--accent));
     --success: #4cc38a;
     --success-soft: rgba(76, 195, 138, 0.14);
     --warning: #e3b341;

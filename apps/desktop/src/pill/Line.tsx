@@ -37,10 +37,12 @@ const mix = (a: number[], b: number[], t: number) => a.map((v, i) => v + (b[i] -
 interface Palette {
   ink: RGB;
   accent: RGB;
+  /** The line while it listens and thinks: blue for Seafoam, the accent otherwise. */
+  voice: RGB;
   success: RGB;
   warning: RGB;
   danger: RGB;
-  /** The line colour for an error: red, or ink when the accent is itself red and a red line means "listening". */
+  /** The line colour for an error: red, or ink when the voice is itself red and a red line means "listening". */
   errorLine: RGB;
   dark: boolean;
 }
@@ -54,14 +56,16 @@ function readPalette(): Palette {
   const cs = getComputedStyle(document.documentElement);
   const get = (name: string, fallback: RGB) => parseColor(cs.getPropertyValue(name)) ?? fallback;
   const ink = get("--text", [27, 27, 31]);
-  const accent = get("--accent", [47, 95, 219]);
+  const accent = get("--accent", [10, 117, 96]);
+  const voice = get("--voice", accent);
   const danger = get("--danger", [180, 35, 47]);
-  const gap = Math.abs(hue(accent) - hue(danger)) % 360;
-  const saturated = Math.max(...accent) - Math.min(...accent) > 40;
+  const gap = Math.abs(hue(voice) - hue(danger)) % 360;
+  const saturated = Math.max(...voice) - Math.min(...voice) > 40;
   return {
     ink,
     accent,
-    success: get("--success", [23, 120, 75]),
+    voice,
+    success: get("--done", get("--success", [23, 120, 75])),
     warning: get("--warning", [143, 94, 18]),
     danger,
     errorLine: saturated && Math.min(gap, 360 - gap) < 30 ? ink : danger,
@@ -318,8 +322,8 @@ export function LinePill() {
         // is red-ish (Olivetti red, or a red OS accent), where red already means "listening".
         : s.kind === "error" ? P.errorLine
         : s.kind === "listening" && s.quiet ? P.warning
-        : s.kind === "listening" ? P.accent
-        : s.kind === "thinking" || s.kind === "starting" ? mix(P.accent, P.ink, 0.25)
+        : s.kind === "listening" ? P.voice
+        : s.kind === "thinking" || s.kind === "starting" ? mix(P.voice, P.ink, 0.25)
         : s.kind === "idle" && (b === "no_mic" || b === "hotkeys_off" || b === "cleanup_off") ? P.warning
         : s.kind === "idle" && b === "error" ? mix(P.danger, P.ink, 0.4)
         : s.kind === "idle" && b === "downloading" ? P.accent

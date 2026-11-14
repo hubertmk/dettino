@@ -23,11 +23,13 @@ describe("OS accent clamp", () => {
     // dark: the accent as text on the dark surface, dark text on the accent
     expect(contrast(rgb(a.dark), [28, 28, 30])).toBeGreaterThanOrEqual(4.5);
     expect(contrast(rgb(a.darkText), rgb(a.dark))).toBeGreaterThanOrEqual(4.5);
+    // a split fill (Seafoam): its own text on the button colour
+    if (a.fill) expect(contrast(rgb(a.fillText!), rgb(a.fill))).toBeGreaterThanOrEqual(4.5);
   });
   it("lists every palette that tokens.css defines", () => {
     const css = readFileSync(resolve(__dirname, "../styles/tokens.css"), "utf8");
     for (const a of ACCENTS) {
-      const block = a.id === "cobalt" ? css.slice(0, css.indexOf("[data-accent")) : css.match(new RegExp(`data-accent="${a.id}"\\][^}]*`))?.[0] ?? "";
+      const block = a.id === "surf" ? css.slice(0, css.indexOf("[data-accent")) : css.match(new RegExp(`data-accent="${a.id}"\\][^}]*`))?.[0] ?? "";
       expect(block, a.id).toContain(a.light);
       expect(block, a.id).toContain(a.dark);
       expect(block, a.id).toContain(a.darkText);

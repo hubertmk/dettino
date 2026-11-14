@@ -181,7 +181,7 @@ mod tests {
         .unwrap();
         let s = load(&p);
         assert_eq!(s.tap_max_ms, 300, "valid fields are kept");
-        assert_eq!(s.accent, Accent::Cobalt, "the unknown accent falls back to the default");
+        assert_eq!(s.accent, Accent::Surf, "the unknown accent falls back to the default");
         assert_eq!(s.pill_style, app_core::PillStyle::Classic);
         assert_eq!(s.dictionary.len(), 1, "only the broken dictionary entry is dropped");
         assert_eq!(s.dictionary[0].term, "Lindqvist");
@@ -198,7 +198,7 @@ mod tests {
         std::fs::write(&p, r#"{"use_os_accent": true}"#).unwrap();
         assert_eq!(load(&p).accent, Accent::System);
         std::fs::write(&p, r#"{"use_os_accent": false}"#).unwrap();
-        assert_eq!(load(&p).accent, Accent::Cobalt);
+        assert_eq!(load(&p).accent, Accent::Surf);
         std::fs::write(&p, r#"{"use_os_accent": true, "accent": "plum"}"#).unwrap();
         assert_eq!(load(&p).accent, Accent::Plum);
         std::fs::remove_dir_all(d).ok();
