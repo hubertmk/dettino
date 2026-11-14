@@ -81,7 +81,7 @@ checksum = "330a5ed07fa54e4702c9d6c4174f74427fc0ef6e214bbd677ae50a5099946470"
 
 [[package]]
 name = "app-asr-cloud"
-version = "0.2.0"
+version = "0.2.1"
 dependencies = [
  "app-audio",
  "app-core",
@@ -95,7 +95,7 @@ dependencies = [
 
 [[package]]
 name = "app-asr-local"
-version = "0.2.0"
+version = "0.2.1"
 dependencies = [
  "app-audio",
  "app-core",
@@ -107,7 +107,7 @@ dependencies = [
 
 [[package]]
 name = "app-audio"
-version = "0.2.0"
+version = "0.2.1"
 dependencies = [
  "app-core",
  "cpal",
@@ -118,7 +118,7 @@ dependencies = [
 
 [[package]]
 name = "app-cleanup"
-version = "0.2.0"
+version = "0.2.1"
 dependencies = [
  "app-core",
  "chrono",
@@ -130,7 +130,7 @@ dependencies = [
 
 [[package]]
 name = "app-core"
-version = "0.2.0"
+version = "0.2.1"
 dependencies = [
  "async-trait",
  "futures",
@@ -144,7 +144,7 @@ dependencies = [
 
 [[package]]
 name = "app-hotkey"
-version = "0.2.0"
+version = "0.2.1"
 dependencies = [
  "app-core",
  "crossbeam-channel",
@@ -156,7 +156,7 @@ dependencies = [
 
 [[package]]
 name = "app-llm"
-version = "0.2.0"
+version = "0.2.1"
 dependencies = [
  "app-core",
  "async-trait",
@@ -171,7 +171,7 @@ dependencies = [
 
 [[package]]
 name = "app-platform"
-version = "0.2.0"
+version = "0.2.1"
 dependencies = [
  "app-core",
  "app-hotkey",
@@ -191,7 +191,7 @@ dependencies = [
 
 [[package]]
 name = "app-storage"
-version = "0.2.0"
+version = "0.2.1"
 dependencies = [
  "app-core",
  "bzip2 0.6.1",
@@ -1180,7 +1180,7 @@ dependencies = [
 
 [[package]]
 name = "dettino"
-version = "0.2.0"
+version = "0.2.1"
 dependencies = [
  "app-asr-cloud",
  "app-asr-local",
