@@ -124,8 +124,13 @@ header.band { position: sticky; top: 0; z-index: 20; box-shadow: 0 1px 0 rgba(14
 .plate:hover { color: var(--ink); background: #fff; box-shadow: 0 4px 12px -4px rgba(17, 19, 23, .2); }
 .plate:active { transform: translateY(1px); }
 .plate svg { width: 19px; height: 19px; fill: none; stroke: currentColor; stroke-width: 2; stroke-linecap: round; stroke-linejoin: round; }
-.plate.primary { background: var(--surf); border-color: transparent; color: var(--on-surf); box-shadow: 0 1px 1px rgba(14, 17, 28, .12), 0 8px 20px -10px rgba(var(--surf-rgb), .9); }
-.plate.primary:hover { background: var(--surf-lo); color: var(--on-surf); box-shadow: 0 1px 1px rgba(14, 17, 28, .12), 0 12px 26px -10px rgba(var(--surf-rgb), 1); }
+.plate svg.os { width: 18px; height: 18px; fill: currentColor; stroke: none; }
+.plate.primary,
+html[data-os="mac"] .acts .plate[data-dl="mac"],
+html[data-os="win"] .acts .plate[data-dl="windows"] { background: var(--surf); border-color: transparent; color: var(--on-surf); box-shadow: 0 1px 1px rgba(14, 17, 28, .12), 0 8px 20px -10px rgba(var(--surf-rgb), .9); }
+.plate.primary:hover,
+html[data-os="mac"] .acts .plate[data-dl="mac"]:hover,
+html[data-os="win"] .acts .plate[data-dl="windows"]:hover { background: var(--surf-lo); color: var(--on-surf); box-shadow: 0 1px 1px rgba(14, 17, 28, .12), 0 12px 26px -10px rgba(var(--surf-rgb), 1); }
 
 /* ---------- hero: the pitch on the left, a small screen on the right ---------- */
 .hero { padding: clamp(36px, 5vw, 64px) 0 clamp(8px, 2vw, 24px); }
@@ -165,6 +170,7 @@ h1 .cur { display: inline-block; width: .075em; height: .74em; margin-left: .06e
 .acts { display: flex; flex-wrap: wrap; align-items: center; gap: 12px 28px; }
 .acts .plate svg { transition: transform .25s var(--ease-out); }
 .acts .plate:hover svg { transform: translateX(3px); }
+.acts .plate:hover svg.os { transform: none; }
 .textlink {
   display: inline-flex; align-items: center; gap: 8px; padding: 6px 0 4px;
   color: var(--ink); font-weight: 600; font-size: 16px; text-decoration: none;
@@ -173,6 +179,7 @@ h1 .cur { display: inline-block; width: .075em; height: .74em; margin-left: .06e
 .textlink:hover { color: var(--ink); border-bottom-color: var(--surf); }
 .textlink svg { width: 17px; height: 17px; fill: none; stroke: currentColor; stroke-width: 2; stroke-linecap: round; stroke-linejoin: round; transition: transform .25s var(--ease-out); }
 .textlink:hover svg { transform: translateY(2px); }
+/* the detected OS gets the highlighted button, and comes first */
 html[data-os="mac"] .acts [data-dl="mac"] { order: -1; }
 .fine { font-size: 14px; color: var(--ink-2); }
 @media (max-width: 960px) { .hero-in { grid-template-columns: 1fr; } }
