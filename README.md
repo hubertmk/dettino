@@ -15,7 +15,7 @@
 
 ---
 
-Dettino is a small personal project. I just wanted dictation that runs on my own machine and works everywhere I am, with or without an internet connection, and I wanted to see how well that could perform. So far it looks like it performs well. It's still one person's tool, so expect some rough edges.
+Dettino is a small personal project. I just wanted dictation that runs on my own machine and works everywhere I am, with or without an internet connection, and I wanted to see how well that could perform. So far it looks like it performs well using local LLM's only. It's still one person's tool, so expect some rough edges.
 
 You choose who hears you and who polishes the text: fully on-device models, your own cloud API keys, or a mix, with automatic fallback.
 
