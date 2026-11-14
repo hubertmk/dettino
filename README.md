@@ -9,7 +9,7 @@
 <p align="center">Windows 11 · macOS (Apple Silicon) · on-device or your own API keys</p>
 
 <p align="center">
-  <a href="LICENSE"><img src="https://img.shields.io/badge/license-MIT-2F5FDB" alt="MIT license"></a>
+  <a href="LICENSE"><img src="https://img.shields.io/badge/license-MIT-2EC4A0" alt="MIT license"></a>
   <a href="https://buymeacoffee.com/hubertmk"><img src="https://img.shields.io/badge/Buy%20me%20a%20coffee-%E2%98%95-ffdd00?labelColor=1f1f1f" alt="Buy me a coffee"></a>
 </p>
 
@@ -95,7 +95,7 @@ On Windows, `pnpm build` produces an unsigned per-user installer, `Dettino_<vers
 
 **Setting it up for someone else?** [`docs/setup-guide.md`](docs/setup-guide.md) is a step-by-step guide for non-developers: which path fits their PC, the SmartScreen warning, every wizard step with screenshots, everyday use, troubleshooting, updating and uninstalling. Send it along with the installer.
 
-While you dictate, a small pill near the bottom of the screen shows what Dettino is doing. Two looks are available under *Shortcuts & cleanup → Feedback → Pill style*: **One line** (default), a line that ripples with your voice and flashes when the text lands, and **Classic**, the dot that grows into a pill. The accent colour is Cobalt by default; *Shortcuts & cleanup → Feedback → Accent colour* offers other palettes and *System*, which follows the Windows or macOS accent.
+While you dictate, a small pill near the bottom of the screen shows what Dettino is doing. Two looks are available under *Shortcuts & cleanup → Feedback → Pill style*: **One line** (default), a line that ripples with your voice and flashes when the text lands, and **Classic**, the dot that grows into a pill. The accent colour is Seafoam by default (the pill still listens in blue and glows seafoam after a paste); *Shortcuts & cleanup → Feedback → Accent colour* offers other palettes and *System*, which follows the Windows or macOS accent.
 
 ## Versioning and releases
 

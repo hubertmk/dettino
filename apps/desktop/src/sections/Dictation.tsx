@@ -205,7 +205,7 @@ export function Dictation() {
         </Row>
         <Row
           title="Accent colour"
-          desc={`Buttons, toggles and the ${pillWord(s.pill_style)} while it listens. ${
+          desc={`${s.accent === "surf" ? `Buttons and toggles. The ${pillWord(s.pill_style)} listens in blue and glows seafoam after a paste.` : `Buttons, toggles and the ${pillWord(s.pill_style)} while it listens.`} ${
             s.accent === "system" ? `Following your ${osName(snap.platform)} accent.` : `Now: ${ACCENTS.find((a) => a.id === s.accent)?.name}.`
           }`}
         >
@@ -214,7 +214,7 @@ export function Dictation() {
             value={s.accent}
             onChange={(v) => update((x) => (x.accent = v))}
             options={[
-              ...ACCENTS.map((a) => ({ value: a.id, label: a.name, light: a.light, dark: a.dark })),
+              ...ACCENTS.map((a) => ({ value: a.id, label: a.name, light: a.fill ?? a.light, dark: a.dark })),
               { value: "system" as const, label: `System (${osName(snap.platform)} accent)` },
             ]}
           />

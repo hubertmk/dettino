@@ -295,7 +295,7 @@
   "sound_style": "classic",
   "pill_style": "line",
   "success_animation": "flash",
-  "accent": "cobalt",
+  "accent": "surf",
   "launch_at_login": true,
   "start_ollama": true,
   "paused": false,

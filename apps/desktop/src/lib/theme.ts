@@ -40,8 +40,13 @@ export function clampAccent(hex: string, theme: "light" | "dark", min = 4.5): st
   return toHex(toward);
 }
 
-/** The named palettes. Keep in sync with the `data-accent` blocks in styles/tokens.css. */
-export const ACCENTS: { id: Exclude<Accent, "system">; name: string; light: string; dark: string; darkText: string }[] = [
+/**
+ * The named palettes. Keep in sync with the `data-accent` blocks in styles/tokens.css.
+ * `light` is the accent as text and icons on the light theme; `fill` and `fillText`, when set,
+ * are the button colour and the text on it (Seafoam is too light for white text).
+ */
+export const ACCENTS: { id: Exclude<Accent, "system">; name: string; light: string; dark: string; darkText: string; fill?: string; fillText?: string }[] = [
+  { id: "surf", name: "Seafoam", light: "#0a7560", dark: "#2ec4a0", darkText: "#0b0d0c", fill: "#2ec4a0", fillText: "#0b0d0c" },
   { id: "cobalt", name: "Cobalt", light: "#2f5fdb", dark: "#6b9bff", darkText: "#0b1530" },
   { id: "ultramarine", name: "Ultramarine", light: "#2b3fd6", dark: "#8794ff", darkText: "#0b1033" },
   { id: "indigo", name: "Indigo", light: "#4f46e5", dark: "#9590ff", darkText: "#120f3a" },
@@ -59,7 +64,7 @@ const OS_VARS = ["--os-accent-light", "--os-accent-dark", "--os-accent-text-dark
 
 /**
  * Apply the palette picked in Settings: `data-accent` selects it in tokens.css. For "System",
- * the OS accent (clamped to AA) overrides it; without an OS accent, Cobalt stays. Safe to call
+ * the OS accent (clamped to AA) overrides it; without an OS accent, Seafoam stays. Safe to call
  * again whenever the setting changes.
  */
 export async function applyAccent() {
@@ -72,7 +77,7 @@ export async function applyAccent() {
     const values = [light, dark, dark ? toHex(mix(parse(dark)!, [0, 0, 0], 0.85)) : null];
     OS_VARS.forEach((v, i) => (values[i] ? root.style.setProperty(v, values[i]) : root.style.removeProperty(v)));
   } catch {
-    // The Cobalt tokens stay in place.
+    // The Seafoam tokens stay in place.
   }
   window.dispatchEvent(new Event(ACCENT_APPLIED));
 }

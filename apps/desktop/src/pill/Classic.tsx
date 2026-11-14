@@ -233,7 +233,7 @@ function Content({ st, now }: { st: PillState; now: number }) {
       const glyph = st.mode === "command" ? <I.Wand /> : <I.Mic />;
       return (
         <>
-          <span className={`glyph ${st.quiet ? "warning" : "accent"}`}>{glyph}</span>
+          <span className={`glyph ${st.quiet ? "warning" : "voice"}`}>{glyph}</span>
           <Wave />
           {st.hands_free && <span className="label">{mmss(elapsed)}</span>}
           {(st.quiet || (st.hands_free && elapsed < 3500) || st.mode === "command" || (st.label && st.label.startsWith("1 minute"))) && st.label && (

@@ -66,6 +66,6 @@ Not part of the app.
 
 | Component | License | Notes |
 |---|---|---|
-| Archivo (`site/fonts/archivo-latin.woff2`) | SIL Open Font License 1.1 | © The Archivo Project Authors (Omnibus-Type). Latin subset from Google Fonts, unmodified, self-hosted by the website. |
+| Saira (`site/fonts/saira-latin.woff2`) | SIL Open Font License 1.1 | © The Saira Project Authors (Omnibus-Type). Latin subset from Google Fonts, unmodified, self-hosted by the website. |
 | Geist, Geist Mono | SIL Open Font License 1.1 | © Vercel. Loaded by `@remotion/google-fonts` in `tools/promo-video`. |
 | Remotion | Remotion License | <https://github.com/remotion-dev/remotion/blob/main/LICENSE.md>. Free for individuals and for companies with up to three employees; larger companies need a company license to render with it. Only `tools/promo-video` uses it; the app does not. |

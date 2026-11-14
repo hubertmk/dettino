@@ -1,8 +1,8 @@
 <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24">
   <!-- Hand-tuned 24 px frame: the d with a slightly larger counter and a blunter tail. -->
-  <rect x="1.5" y="1.5" width="21" height="21" rx="5" fill="#2F5FDB"/>
-  <path d="M7.5 16.6L6 19.6L9.6 18Z" fill="#FFFFFF" stroke="#FFFFFF" stroke-width="0.8" stroke-linejoin="round"/>
-  <circle cx="11.2" cy="13.6" r="4.9" fill="#FFFFFF"/>
-  <rect x="14.2" y="4.3" width="3.8" height="14.3" rx="1.9" fill="#FFFFFF"/>
-  <circle cx="11.2" cy="13.6" r="2.2" fill="#2F5FDB"/>
+  <rect x="1.5" y="1.5" width="21" height="21" rx="5" fill="#2EC4A0"/>
+  <path d="M7.5 16.6L6 19.6L9.6 18Z" fill="#0B0D0C" stroke="#0B0D0C" stroke-width="0.8" stroke-linejoin="round"/>
+  <circle cx="11.2" cy="13.6" r="4.9" fill="#0B0D0C"/>
+  <rect x="14.2" y="4.3" width="3.8" height="14.3" rx="1.9" fill="#0B0D0C"/>
+  <circle cx="11.2" cy="13.6" r="2.2" fill="#2EC4A0"/>
 </svg>
