@@ -1,0 +1,14 @@
+{
+  "detector": {
+    "ignoreRules": [],
+    "ignoreFiles": [],
+    "ignoreValues": [
+      {
+        "rule": "design-system-font",
+        "value": "sfmono-regular",
+        "createdAt": "2026-11-14T10:09:41.585Z",
+        "reason": "Claude: system monospace stack, documented in DESIGN.md (inline code on the reading page and the Editor example in the hero demo); same stack already used for .doc code"
+      }
+    ]
+  }
+}
