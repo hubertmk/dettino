@@ -15,7 +15,17 @@
 
 ---
 
-Dettino is a small personal project. I just wanted dictation that runs on my own machine and works everywhere I am, with or without an internet connection, and I wanted to see how well that could perform. So far it looks like it performs well using local LLM's only. It's still one person's tool, so expect some rough edges.
+**Nothing here is new, and that's okay.** Hold-to-talk dictation with AI cleanup is an idea other apps had first, and they do it well. Dettino is my learning and assessment project. I wanted to understand how a tool like this works from the inside, and to find out for myself how good dictation can get when everything runs on my own machine, with or without an internet connection. The answer so far: surprisingly good, even with local models only.
+
+I could only build it because so many people did the hard work and shared it. Thank you to:
+
+- NVIDIA for [Parakeet](https://huggingface.co/nvidia/parakeet-tdt-0.6b-v2) and OpenAI for [Whisper](https://github.com/openai/whisper), which turn speech into text
+- the [Silero](https://github.com/snakers4/silero-vad) team, for knowing when someone is speaking
+- [sherpa-onnx](https://github.com/k2-fsa/sherpa-onnx) and [ONNX Runtime](https://github.com/microsoft/onnxruntime), which make running these models on an ordinary laptop easy
+- [Ollama](https://ollama.com) and Google's [Gemma](https://ai.google.dev/gemma), for text cleanup that never leaves your computer
+- [Tauri](https://tauri.app), the Rust and React communities, and the many open-source maintainers listed in [THIRD_PARTY_NOTICES.md](THIRD_PARTY_NOTICES.md)
+
+Dettino is mostly me connecting their pieces and learning a lot along the way. It's still one person's tool, so expect some rough edges.
 
 You choose who hears you and who polishes the text: fully on-device models, your own cloud API keys, or a mix, with automatic fallback.
 
