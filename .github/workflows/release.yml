@@ -209,5 +209,23 @@ jobs:
             echo "::error::No installer matching ${{ matrix.bundle }}"
             exit 1
           fi
+          # A tag's release also gets each installer without the version in its name
+          # (Dettino_x64-setup.exe, Dettino_aarch64.dmg): the website links to
+          # releases/latest/download/<that name>, which always serves the newest release.
+          if [ "$GITHUB_REF_TYPE" = tag ]; then
+            version=${GITHUB_REF_NAME#v}
+            stable=()
+            for f in "${files[@]}"; do
+              name=$(basename "$f")
+              plain=${name/_${version}_/_}
+              if [ "$plain" = "$name" ]; then
+                echo "::error::$name does not carry the version $version, so the website's download link would break."
+                exit 1
+              fi
+              cp "$f" "$RUNNER_TEMP/$plain"
+              stable+=("$RUNNER_TEMP/$plain")
+            done
+            files+=("${stable[@]}")
+          fi
           ls -l "${files[@]}"
           gh release upload "$RELEASE" "${files[@]}" --clobber

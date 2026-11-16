@@ -10,19 +10,51 @@
 <meta property="og:title" content="Dettino · Hold Ctrl+Space. Talk. It’s typed.">
 <meta property="og:description" content="Dictation for your computer. You choose who hears you: on-device models, your own keys, or a mix.">
 <meta property="og:type" content="website">
+<meta property="og:url" content="https://dettino.com/">
+<meta property="og:site_name" content="Dettino">
+<meta property="og:image" content="https://dettino.com/og.png">
+<meta property="og:image:width" content="1200">
+<meta property="og:image:height" content="630">
+<meta property="og:image:alt" content="Dettino. Hold Ctrl+Space. Talk. It’s typed. Private dictation for Windows and Mac.">
+<meta name="twitter:card" content="summary_large_image">
+<link rel="canonical" href="https://dettino.com/">
 <link rel="icon" type="image/svg+xml" href="icon.svg">
+<script type="application/ld+json">
+{
+  "@context": "https://schema.org",
+  "@graph": [
+    {
+      "@type": "WebSite",
+      "name": "Dettino",
+      "url": "https://dettino.com/"
+    },
+    {
+      "@type": "SoftwareApplication",
+      "name": "Dettino",
+      "url": "https://dettino.com/",
+      "description": "Private dictation for your computer. Hold Ctrl+Space in any app, talk, and clean, punctuated text lands at your cursor. Runs on your computer by default; cloud models only if you choose.",
+      "applicationCategory": "UtilitiesApplication",
+      "operatingSystem": "Windows 11, macOS (Apple Silicon)",
+      "image": "https://dettino.com/og.png",
+      "license": "https://opensource.org/licenses/MIT",
+      "sameAs": "https://github.com/hubertmk/dettino",
+      "offers": { "@type": "Offer", "price": "0", "priceCurrency": "USD" }
+    }
+  ]
+}
+</script>
 <link rel="preload" href="fonts/saira-latin.woff2" as="font" type="font/woff2" crossorigin>
 <link rel="stylesheet" href="site.css">
 <script>
-// Download links: the files .github/workflows/release.yml attaches to the GitHub Release for the tag.
-// Check both URLs (version and file names) against the published release.
+// Download links: always the newest published release. .github/workflows/release.yml attaches
+// each installer to a tag's release twice, once with the version in its name and once without,
+// and GitHub serves the unversioned copy of the release marked "Latest" at releases/latest/download/.
 // Set `live: false` to go back to "coming soon"; ?dl=preview then still shows the buttons.
 // A platform whose link is empty shows "tell me when it's out" instead of a download.
 window.DETTINO_DOWNLOADS = {
   live: true,
-  version: "0.2.0",
-  windows: "https://github.com/hubertmk/dettino/releases/download/v0.2.0/Dettino_0.2.0_x64-setup.exe",
-  mac: "https://github.com/hubertmk/dettino/releases/download/v0.2.0/Dettino_0.2.0_aarch64.dmg"
+  windows: "https://github.com/hubertmk/dettino/releases/latest/download/Dettino_x64-setup.exe",
+  mac: "https://github.com/hubertmk/dettino/releases/latest/download/Dettino_aarch64.dmg"
 };
 (function () {
   var d = window.DETTINO_DOWNLOADS;
