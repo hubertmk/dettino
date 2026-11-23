@@ -13,6 +13,16 @@
     text-shadow: 0 0 3px var(--halo), 0 0 1px var(--halo);
     animation: labin 180ms var(--ease) 110ms both;
   }
+  /* A feathered plate of the surface tone under the words. The text-shadow halo alone is too
+     thin when the window behind is the same tone as the text (dark text on a dark app, light
+     text on a light one); the plate gives the words a ground on any wallpaper, while on a
+     background of its own tone it disappears. A wide feather so it reads as a glow, not a card;
+     lifted so its fade ends before the line, which sits 5 px below the words. */
+  .lab, .tray { isolation: isolate; }
+  .lab::before, .tray::before {
+    content: ""; position: absolute; inset: -5px -10px 1px; z-index: -1; pointer-events: none;
+    border-radius: 999px; background: var(--plate); filter: blur(7px);
+  }
   .lab.warning { color: var(--warning); }
   .lab.danger { color: var(--danger); }
   .lab .sub { font-weight: 500; color: var(--text-2); }
@@ -57,6 +67,7 @@
   }
   @media (forced-colors: active) {
     .lab, .tray { background: Canvas; color: CanvasText; text-shadow: none; padding: 0 6px; border: 1px solid CanvasText; }
+    .lab::before, .tray::before { display: none; }
     .action { color: LinkText; }
   }
 }

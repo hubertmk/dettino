@@ -12,6 +12,7 @@
   --level: 0;
   /* line: words get a halo of the surface tone instead of a card */
   --halo: rgba(255, 255, 255, 0.85);
+  --plate: rgba(255, 255, 255, 0.88);
   font-family: var(--font-ui);
 }
 @media (prefers-color-scheme: dark) {
@@ -20,6 +21,7 @@
     --border: rgba(255, 255, 255, 0.11);
     --shadow: 0 4px 16px rgba(0, 0, 0, 0.45), 0 1px 3px rgba(0, 0, 0, 0.3);
     --halo: rgba(0, 0, 0, 0.7);
+    --plate: rgba(18, 18, 20, 0.8);
   }
 }
 
