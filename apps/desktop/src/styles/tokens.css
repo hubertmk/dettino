@@ -17,7 +17,6 @@
   --pal-dark-text: #0b0d0c;
   --pal-light-fill: #2ec4a0;
   --pal-light-text: #0b0d0c;
-  --pal-mark: #0b0d0c;
   --pal-voice-light: #2f5fdb;
   --pal-voice-dark: #6b9bff;
   --pal-done: #2ec4a0;
@@ -25,7 +24,6 @@
 :root[data-accent]:not([data-accent="surf"]) {
   --pal-light-fill: initial;
   --pal-light-text: initial;
-  --pal-mark: initial;
   --pal-voice-light: initial;
   --pal-voice-dark: initial;
   --pal-done: initial;
@@ -53,7 +51,6 @@
   --accent: var(--os-accent-light, var(--pal-light));
   --accent-fill: var(--os-accent-light, var(--pal-light-fill, var(--pal-light)));
   --accent-text: var(--pal-light-text, #ffffff);
-  --accent-mark: var(--pal-mark, #ffffff);
   --accent-soft: color-mix(in srgb, var(--accent) 10%, transparent);
   /* The pill: --voice while it listens, --done for the flash after a paste. */
   --voice: var(--pal-voice-light, var(--accent));
