@@ -175,7 +175,7 @@ const snapshot = () => ({
   },
   models: [
     { id: "silero-vad", family: "vad", name: "Silero voice detection", description: "Detects when you speak, so silence is never transcribed.", url: "", bytes: 643854, license: "MIT", dir: "vad", archive: false, english_only: false, recommended: true, installed: installedModels.has("silero-vad") },
-    { id: "parakeet-tdt-0.6b-v2-int8", family: "parakeet", name: "Parakeet TDT 0.6B v2", description: "Fastest and most accurate for English. Runs on any modern CPU.", url: "", bytes: 482468385, license: "CC-BY-4.0 (NVIDIA)", dir: "parakeet", archive: true, english_only: true, recommended: true, installed: installedModels.has("parakeet-tdt-0.6b-v2-int8") },
+    { id: "parakeet-tdt-0.6b-v2-int8", family: "parakeet", name: "Parakeet TDT 0.6B v2", description: "Fastest and most accurate for English. Runs on any modern CPU.", url: "", bytes: 482440461, license: "CC-BY-4.0 (NVIDIA)", dir: "parakeet", archive: true, english_only: true, recommended: true, installed: installedModels.has("parakeet-tdt-0.6b-v2-int8") },
     { id: "whisper-turbo", family: "whisper", name: "Whisper Large v3 Turbo", description: "Robust with accents and noise; slower than Parakeet on CPU.", url: "", bytes: 563790207, license: "MIT (OpenAI)", dir: "whisper", archive: true, english_only: false, recommended: false, installed: false },
   ],
   gpus: hw.gpus,
