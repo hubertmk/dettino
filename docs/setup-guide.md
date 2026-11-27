@@ -168,7 +168,7 @@ If nothing appears, open Notepad and try there first; it is the simplest case. T
 
 ## 5. Everyday use
 
-- **Hold Ctrl+Space, talk, release.** Short sentences work best. Say punctuation if you like ("comma", "period", "new paragraph"); Dettino adds the obvious ones itself.
+- **Hold Ctrl+Space, talk, release.** Short sentences work best. Say punctuation if you like ("comma", "period", "new paragraph"), and say "first…, second…, third…" or "bullet point…" to get a list; Dettino adds the obvious punctuation itself.
 - **Undo the cleanup:** if Dettino rewrote more than you wanted, press **Ctrl+Alt+Z** within a minute and you get exactly what you said instead.
 - **Long dictation:** press **Ctrl+Shift+Space** once, talk as long as you like (up to 20 minutes), press **Space** to finish or **Esc** to throw it away.
 - **The line:** hover it (or click it) to see four buttons above it: *Pause*, *Undo*, *Paste last*, *Settings*. Drag it somewhere else if it is in the way. The Dettino icon in the system tray (bottom right, next to the clock) has the same actions and more.

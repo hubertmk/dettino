@@ -145,6 +145,9 @@ export function Dictation() {
             <span className="small muted">Sent with every cleanup. {400 - instruction.length} characters left.</span>
           </div>
         </div>
+        <Row title="Spoken lists" desc="“First…, second…, third…” and “bullet point…” become a list, one item per line. Never in terminals.">
+          <Toggle label="Spoken lists" on={s.format_lists} onChange={(v) => update((x) => (x.format_lists = v))} />
+        </Row>
       </div>
 
       <div className="card">
