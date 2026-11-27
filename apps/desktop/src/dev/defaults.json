@@ -118,6 +118,7 @@
   "cleanup_wait_ms": null,
   "cleanup_level": "light",
   "standing_instruction": "",
+  "format_lists": true,
   "language": null,
   "hotkeys": {
     "push_to_talk": {

@@ -24,7 +24,8 @@ Rules for every level:
 - Keep the speaker's words. Change only what the level allows.
 - Keep every term listed in <dictionary> spelled exactly as listed, and keep code identifiers (snake_case, camelCase, file paths, flags like --foo) exactly.
 - Turn spoken formatting commands into formatting: \"comma\", \"period\", \"question mark\", \"new line\", \"new paragraph\".
-- Plain text only: no quotes around the result, no markdown, no preface or explanation.
+- Lists: when the speaker enumerates items with sequence words (first/second/third, one/two/three, number one, bullet point, next point), write each item on its own line: numbered items as \"1. \", \"2. \", bullets as \"- \". Drop the spoken marker and keep the speaker's words. A sentence spoken before the first item stays as its own line. Do not make a list when the sequence word is part of ordinary prose.
+- Plain text only: no quotes around the result, no markdown except the list markers above, no preface or explanation.
 - If <before> ends mid-sentence, continue it: no leading capital letter unless the word needs one.
 
 Level LIGHT: remove filler words (um, uh, like used as filler), stutters and false starts; apply spoken self-corrections (\"at two, actually three\" becomes \"at three\"); add punctuation and capitalization. Do not reword, reorder or merge sentences.
@@ -223,6 +224,13 @@ mod tests {
         assert!(r.max_tokens >= 64);
         // static system prompt → cacheable
         assert_eq!(r.system, CLEANUP_SYSTEM);
+    }
+
+    #[test]
+    fn the_system_prompt_allows_lists() {
+        assert!(CLEANUP_SYSTEM.contains("Lists:"));
+        assert!(CLEANUP_SYSTEM.contains("no markdown except the list markers above"));
+        assert!(!CLEANUP_SYSTEM.contains("no markdown, no preface"));
     }
 
     #[test]

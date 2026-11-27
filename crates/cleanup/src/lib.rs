@@ -4,6 +4,7 @@
 
 pub mod guard;
 pub mod learn;
+pub mod lists;
 pub mod nouns;
 pub mod prompt;
 pub mod rules;

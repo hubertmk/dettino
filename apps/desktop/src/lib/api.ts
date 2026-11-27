@@ -86,6 +86,7 @@ export interface Settings {
   cleanup_wait_ms: number | null;
   cleanup_level: CleanupLevel;
   standing_instruction: string;
+  format_lists: boolean;
   /** ISO 639-1 code of the spoken language; null = let the model detect it. */
   language: string | null;
   hotkeys: Hotkeys;

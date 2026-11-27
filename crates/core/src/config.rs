@@ -378,6 +378,8 @@ pub struct Settings {
 
     pub cleanup_level: CleanupLevel,
     pub standing_instruction: String,
+    /// Turn "first…, second…" and "bullet point…" into a list, one item per line.
+    pub format_lists: bool,
     /// Spoken language as an ISO 639-1 code ("de"); `None` lets Whisper and cloud
     /// transcription detect it. Parakeet v2 understands English whatever this says.
     pub language: Option<String>,
@@ -429,6 +431,7 @@ impl Default for Settings {
             cleanup_wait_ms: None,
             cleanup_level: CleanupLevel::Light,
             standing_instruction: String::new(),
+            format_lists: true,
             language: None,
             hotkeys: Hotkeys::default(),
             tap_max_ms: 250,
@@ -645,6 +648,9 @@ mod tests {
         assert_eq!(partial.success_animation, SuccessAnimation::Flash);
         assert_eq!(partial.accent, Accent::Surf);
         assert_eq!(partial.sound_style, SoundStyle::Classic);
+        assert!(Settings::default().format_lists, "spoken lists are on by default");
+        let old: Settings = serde_json::from_str(r#"{"version":1}"#).unwrap();
+        assert!(old.format_lists, "a settings file from before the field loads with it on");
         let line: Settings =
             serde_json::from_str(r#"{"pill_style": "classic", "success_animation": "check_word", "sound_style": "warm_pop"}"#).unwrap();
         assert_eq!(line.pill_style, PillStyle::Classic);
