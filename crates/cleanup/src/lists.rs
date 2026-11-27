@@ -96,13 +96,27 @@ fn marker_at(toks: &[Tok], i: usize, open: Option<(Family, usize)>) -> Option<(F
             return Some((Family::Bullet, 0, if w == "bullet" { 1 } else { 2 }));
         }
         if let Some(v) = position(ORDINALS, w).or_else(|| position(ADVERBS, w)) {
-            return Some((Family::Ordinal, v, 1));
+            let after = toks.get(i + 2).map(|n| n.word.as_str());
+            // Openers that only sound like markers: "first and foremost", "first things first".
+            if matches!((next, after), (Some("and"), Some("foremost")) | (Some("things"), _)) {
+                return None;
+            }
+            // "first of all …, second of all …" and "first off, …" enumerate; drop the idiom too.
+            let len = match (next, after) {
+                (Some("of"), Some("all")) => 3,
+                (Some("off"), _) => 2,
+                _ => 1,
+            };
+            return Some((Family::Ordinal, v, len));
         }
         if CLOSERS.contains(&w) && matches!(open, Some((Family::Ordinal, n)) if n >= 1) {
             return Some((Family::Ordinal, next_value, 1));
         }
         if matches!(w, "number" | "point") {
-            if let Some(v) = next.and_then(|n| position(CARDINALS, n)) {
+            // A pause after the cardinal ("number one, apples") tells a list from
+            // "number one priority".
+            let paused = toks.get(i + 1).is_some_and(|n| n.trailing.contains(CLAUSE_END));
+            if let Some(v) = next.and_then(|n| position(CARDINALS, n)).filter(|_| paused) {
                 return Some((Family::Number, v, 2));
             }
         }
@@ -171,9 +185,12 @@ pub fn format(text: &str) -> Option<String> {
                 if f != Family::Bullet && value != markers.len() + 1 {
                     break;
                 }
-                let t = &toks[i];
-                let boundary = if t.after_connective { toks[i - 1].start } else { t.start };
-                markers.push(Marker { family: f, boundary, item_start: toks[i + len - 1].end });
+                // The item before ends where its joiners begin ("…, and then third …").
+                let mut first = i;
+                while toks[first].after_connective {
+                    first -= 1;
+                }
+                markers.push(Marker { family: f, boundary: toks[first].start, item_start: toks[i + len - 1].end });
                 family = Some(f);
                 i += len;
                 continue;
@@ -228,8 +245,34 @@ mod tests {
 
     #[test]
     fn number_n_makes_a_numbered_list() {
-        assert_eq!(format("number one apples, number two pears").as_deref(), Some("1. Apples\n2. Pears"));
-        assert_eq!(format("point one apples. point two pears").as_deref(), Some("1. Apples\n2. Pears"));
+        assert_eq!(format("number one, apples, number two, pears").as_deref(), Some("1. Apples\n2. Pears"));
+        assert_eq!(format("point one: apples. point two: pears").as_deref(), Some("1. Apples\n2. Pears"));
+    }
+
+    #[test]
+    fn number_n_without_a_pause_is_an_idiom() {
+        assert_eq!(format("number one priority is sleep, number two is food"), None);
+    }
+
+    #[test]
+    fn openers_that_are_idioms_are_not_markers() {
+        assert_eq!(format("first and foremost, be kind. second, be honest"), None);
+        assert_eq!(format("First things first, second nature"), None);
+    }
+
+    #[test]
+    fn first_of_all_and_first_off_are_markers() {
+        assert_eq!(format("first of all thanks, second of all sorry").as_deref(), Some("1. Thanks\n2. Sorry"));
+        assert_eq!(format("first off, apples. second, pears").as_deref(), Some("1. Apples\n2. Pears"));
+    }
+
+    #[test]
+    fn and_then_is_one_joiner() {
+        assert_eq!(
+            format("first apples, second pears, and then third milk").as_deref(),
+            Some("1. Apples\n2. Pears\n3. Milk")
+        );
+        assert_eq!(format("first apples. and then second pears").as_deref(), Some("1. Apples\n2. Pears"));
     }
 
     #[test]

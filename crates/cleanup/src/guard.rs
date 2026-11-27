@@ -2,6 +2,7 @@
 //! raw transcript (plus local rules) is pasted instead, and the pill says so.
 
 use crate::lists;
+use crate::rules;
 use crate::words::{content_words, identifiers, is_filler, lower_tokens, replace_word_ci};
 use app_core::CleanupLevel;
 use std::collections::HashSet;
@@ -82,7 +83,8 @@ pub fn check_cleanup(raw: &str, cleaned: &str, level: CleanupLevel, dictionary: 
     };
     // Spoken list markers ("bullet point", "first") are structure, not words: a list
     // reply is measured against the transcript with those markers folded into lines.
-    let measured = if lists::is_list(cleaned_t) { lists::format(raw) } else { None };
+    // Spoken punctuation goes first, so a "comma" counts as the clause end it is.
+    let measured = if lists::is_list(cleaned_t) { lists::format(&rules::spoken_punctuation(raw)) } else { None };
     let raw = measured.as_deref().unwrap_or(raw);
     let n_in = spoken_word_count(raw);
     let n_out = spoken_word_count(cleaned_t);
@@ -245,6 +247,15 @@ mod tests {
             check_cleanup(raw, "1. Rename user count\n2. Ask Lindqvist", Light, &["Lindqvist".into()]),
             Err(Rejection::DroppedTerm("user_count".into()))
         );
+    }
+
+    #[test]
+    fn bare_bullets_with_spoken_commas_pass_the_guard() {
+        // "bullet" and "next point" count only after a clause end, which here is the spoken "comma".
+        let raw = "bullet apples comma bullet pears comma bullet milk";
+        assert!(check_cleanup(raw, "- Apples\n- Pears\n- Milk", Light, &[]).is_ok());
+        let raw = "next point apples comma next point pears comma next point milk";
+        assert!(check_cleanup(raw, "- Apples\n- Pears\n- Milk", Light, &[]).is_ok());
     }
 
     #[test]

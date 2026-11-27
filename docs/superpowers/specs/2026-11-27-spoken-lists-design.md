@@ -79,14 +79,15 @@ spoken formatting, and the local rules know no list words at all.
 ### Detection (new module `crates/cleanup/src/lists.rs`)
 
 A marker is recognised only at a clause start: the start of the text, or right after
-`.`, `!`, `?`, `;`, `:`, `,` or a line break, optionally preceded by "and" or "then".
+`.`, `!`, `?`, `;`, `:`, `,` or a line break, optionally preceded by "and", "then" or
+"and then" (the joiners belong to no item).
 Matching is whole-word and case-insensitive, reusing `words::replace_word_ci`-style
 boundaries.
 
 | Family | Spoken forms | Output | Rule |
 |---|---|---|---|
-| Ordinals | first, second, third … tenth; firstly, secondly, thirdly; last, lastly, finally close a list | `1. ` … | Must begin with first/firstly and run in order; "third" without "second" is not a list. |
-| Numbered | number one, number two …; point one, point two …; a digit with an attached period as ASR writes it (`1.` `2.`) | `1. ` … | Must begin with one and run in order. Digit markers count anywhere, not only at clause starts, because ASR rarely punctuates before them. |
+| Ordinals | first, second, third … tenth; firstly, secondly, thirdly; "first of all", "first off"; last, lastly, finally close a list | `1. ` … | Must begin with first/firstly and run in order; "third" without "second" is not a list. The idioms "first and foremost" and "first things first" are not markers. |
+| Numbered | number one, number two …; point one, point two …; a digit with an attached period as ASR writes it (`1.` `2.`) | `1. ` … | Must begin with one and run in order. "number N"/"point N" need a pause after the number (`,` `:` `.`), so "number one priority" stays prose. Digit markers count anywhere, not only at clause starts, because ASR rarely punctuates before them. |
 | Bullets | bullet point, bullet, new bullet, next bullet, next point, new point | `- ` | Any count of two or more. |
 
 - Bare cardinals ("one, two, three") are left to the AI: in local rules they are

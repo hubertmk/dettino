@@ -276,7 +276,8 @@ mod tests {
     #[test]
     fn lists_can_be_switched_off() {
         let o = RuleOptions { lists: false, ..Default::default() };
-        assert_eq!(apply("first apples second pears", o), "First apples second pears.");
+        // The same input makes a list with `lists: true` (see spoken_lists_become_lines).
+        assert_eq!(apply("first apples, second pears", o), "First apples, second pears.");
     }
 
     #[test]
