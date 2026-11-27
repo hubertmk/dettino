@@ -1,6 +1,7 @@
 //! Guardrails against over-editing and hallucination. Any rejection means the
 //! raw transcript (plus local rules) is pasted instead, and the pill says so.
 
+use crate::lists;
 use crate::words::{content_words, identifiers, is_filler, lower_tokens, replace_word_ci};
 use app_core::CleanupLevel;
 use std::collections::HashSet;
@@ -79,6 +80,10 @@ pub fn check_cleanup(raw: &str, cleaned: &str, level: CleanupLevel, dictionary: 
         CleanupLevel::Medium => (0.35, 1.6, 0.55),
         _ => (0.45, 1.35, 0.7),
     };
+    // Spoken list markers ("bullet point", "first") are structure, not words: a list
+    // reply is measured against the transcript with those markers folded into lines.
+    let measured = if lists::is_list(cleaned_t) { lists::format(raw) } else { None };
+    let raw = measured.as_deref().unwrap_or(raw);
     let n_in = spoken_word_count(raw);
     let n_out = spoken_word_count(cleaned_t);
     if n_in >= 5 {
@@ -225,6 +230,29 @@ mod tests {
         assert_eq!(check_cleanup("send the report by friday", "**Send** the report by Friday.", Light, &[]), Err(Rejection::Reply));
         // a transcript that itself starts with "sure" is fine
         assert!(check_cleanup("sure we can do that tomorrow", "Sure, we can do that tomorrow.", Light, &[]).is_ok());
+    }
+
+    #[test]
+    fn a_list_reply_passes_the_guard() {
+        let raw = "first check the logs second restart the service third tell the team";
+        assert!(check_cleanup(raw, "1. Check the logs\n2. Restart the service\n3. Tell the team", Light, &[]).is_ok());
+        let raw = "bullet point apples bullet point pears bullet point milk";
+        assert!(check_cleanup(raw, "- Apples\n- Pears\n- Milk", Light, &[]).is_ok());
+        // identifiers and dictionary terms inside items still have to survive
+        let raw = "first rename user_count second ask Lindqvist";
+        assert!(check_cleanup(raw, "1. Rename user_count\n2. Ask Lindqvist", Light, &["Lindqvist".into()]).is_ok());
+        assert_eq!(
+            check_cleanup(raw, "1. Rename user count\n2. Ask Lindqvist", Light, &["Lindqvist".into()]),
+            Err(Rejection::DroppedTerm("user_count".into()))
+        );
+    }
+
+    #[test]
+    fn bold_inside_a_list_is_still_a_reply() {
+        assert_eq!(
+            check_cleanup("first apples second pears third milk", "- **Apples**\n- Pears\n- Milk", Light, &[]),
+            Err(Rejection::Reply)
+        );
     }
 
     #[test]
