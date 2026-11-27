@@ -1,5 +1,6 @@
 //! Local rules: the last link of every cleanup chain, and all of cleanup "Off".
 
+use crate::lists;
 use crate::words::replace_word_ci;
 
 #[derive(Debug, Clone, Copy)]
@@ -12,11 +13,13 @@ pub struct RuleOptions {
     pub trailing_period: bool,
     /// Text before the caret ends mid-sentence.
     pub continues_sentence: bool,
+    /// Turn spoken enumerations (first…, second…; bullet point…) into list lines.
+    pub lists: bool,
 }
 
 impl Default for RuleOptions {
     fn default() -> Self {
-        Self { remove_fillers: false, capitalize: true, trailing_period: true, continues_sentence: false }
+        Self { remove_fillers: false, capitalize: true, trailing_period: true, continues_sentence: false, lists: true }
     }
 }
 
@@ -140,13 +143,20 @@ pub fn apply(text: &str, opt: RuleOptions) -> String {
     if opt.remove_fillers {
         t = remove_fillers(&t);
     }
+    let mut is_list = false;
+    if opt.lists {
+        if let Some(list) = lists::format(&t) {
+            t = list;
+            is_list = true;
+        }
+    }
     t = tidy_with(&t, opt.capitalize || opt.trailing_period);
     if t.is_empty() {
         return t;
     }
     if opt.capitalize {
         t = capitalize_sentences(&t);
-        if opt.continues_sentence {
+        if opt.continues_sentence && !is_list {
             // keep the first word lowercase unless it is "I" or looks like a name/acronym in the source
             let mut cs = t.chars();
             if let Some(first) = cs.next() {
@@ -158,10 +168,17 @@ pub fn apply(text: &str, opt: RuleOptions) -> String {
             }
         }
     }
-    if opt.trailing_period && !t.ends_with(['.', '?', '!', ':', ';', '\n', '"', ')']) {
+    if opt.trailing_period && !is_list && !t.ends_with(['.', '?', '!', ':', ';', '\n', '"', ')']) {
         t.push('.');
     }
     t
+}
+
+/// A list pasted after text on the same line starts on its own line.
+pub fn starts_own_line(before: Option<&str>, text: &str) -> bool {
+    let Some(b) = before else { return false };
+    let b = b.trim_end_matches([' ', '\t']);
+    !b.is_empty() && !b.ends_with(['\n', '\r']) && lists::is_list(text)
 }
 
 /// Does text before the caret end mid-sentence (so the dictation continues it)?
@@ -241,6 +258,40 @@ mod tests {
     fn filler_removal_fallback() {
         let o = RuleOptions { remove_fillers: true, ..Default::default() };
         assert_eq!(apply("um so uh we ship", o), "So we ship.");
+    }
+
+    #[test]
+    fn spoken_lists_become_lines() {
+        let o = RuleOptions::default();
+        assert_eq!(
+            apply("first check the logs comma second restart the service comma third tell the team", o),
+            "1. Check the logs\n2. Restart the service\n3. Tell the team"
+        );
+        assert_eq!(apply("three things. first, the budget. second, hiring", o), "Three things.\n1. The budget\n2. Hiring");
+        assert_eq!(apply("bullet point apples bullet point pears", o), "- Apples\n- Pears");
+        // no period appended to the last item
+        assert!(!apply("first apples, second pears", o).ends_with('.'));
+    }
+
+    #[test]
+    fn lists_can_be_switched_off() {
+        let o = RuleOptions { lists: false, ..Default::default() };
+        assert_eq!(apply("first apples second pears", o), "First apples second pears.");
+    }
+
+    #[test]
+    fn prose_with_ordinals_keeps_the_old_rules() {
+        let o = RuleOptions::default();
+        assert_eq!(apply("the first time I saw it I had second thoughts", o), "The first time I saw it I had second thoughts.");
+    }
+
+    #[test]
+    fn a_list_starts_on_its_own_line() {
+        assert!(starts_own_line(Some("Notes:"), "1. Apples\n2. Pears"));
+        assert!(starts_own_line(Some("Notes: "), "- Apples\n- Pears"));
+        assert!(!starts_own_line(Some("Notes:\n"), "1. Apples\n2. Pears"));
+        assert!(!starts_own_line(None, "1. Apples\n2. Pears"));
+        assert!(!starts_own_line(Some("Notes:"), "Apples and pears."));
     }
 
     #[test]
