@@ -282,13 +282,25 @@ struct CleanupResult {
 
 fn rule_opts(s: &Settings, app_name: &str, before: Option<&str>, remove_fillers: bool) -> RuleOptions {
     let terminal = app_platform::app_category(app_name, "") == "terminal";
-    let _ = s;
     RuleOptions {
         remove_fillers,
         capitalize: !terminal,
         trailing_period: !terminal,
         continues_sentence: rules::continues_sentence(before),
+        lists: s.format_lists && !terminal,
     }
+}
+
+/// The accepted AI text, with a spoken enumeration the model left flat turned into
+/// list lines. Idempotent: a reply that already is a list passes through unchanged.
+fn finish_cleaned(text: &str, opt: RuleOptions) -> String {
+    let t = text.trim();
+    if opt.lists {
+        if let Some(list) = app_cleanup::lists::format(t) {
+            return list;
+        }
+    }
+    t.to_string()
 }
 
 async fn cleanup(s: &Settings, raw: &str, level: CleanupLevel, ctx: Option<&ContextSnapshot>, target: Option<&ForegroundInfo>, rule_ctx: bool, timings: &mut Timings) -> CleanupResult {
@@ -388,7 +400,11 @@ async fn cleanup(s: &Settings, raw: &str, level: CleanupLevel, ctx: Option<&Cont
                 return fallback("The cleanup reply could not be read.", timings);
             };
             match app_cleanup::check_cleanup(raw, &parsed.text, level, &dict) {
-                Ok(()) => CleanupResult { text: parsed.text.trim().to_string(), raw_used: false, reason: None },
+                Ok(()) => CleanupResult {
+                    text: finish_cleaned(&parsed.text, rule_opts(s, app_name, before, false)),
+                    raw_used: false,
+                    reason: None,
+                },
                 Err(rej) => {
                     timings.cleanup_rejected = Some(format!("{rej:?}"));
                     let r = fallback(&rej.explain(), timings);
@@ -645,7 +661,11 @@ async fn process(mut job: Job) {
         let (t, _) = snippets::expand(&t, &s.snippets, &vars);
         (t, c.raw_used, c.reason)
     };
-    if rules::leading_space(ctx.as_ref().and_then(|c| c.before.as_deref()), &final_text) {
+    let before = ctx.as_ref().and_then(|c| c.before.as_deref());
+    if rules::starts_own_line(before, &final_text) {
+        // A list after text on the same line begins below it.
+        final_text.insert(0, '\n');
+    } else if rules::leading_space(before, &final_text) {
         final_text.insert(0, ' ');
     }
     rec.final_text = Some(final_text.clone());
@@ -659,8 +679,9 @@ async fn process(mut job: Job) {
         return;
     }
 
-    // Undo restores what was heard, with the same local rules a cleanup-off paste gets.
-    let undo_text = rules::apply(&raw, RuleOptions { remove_fillers: false, ..Default::default() });
+    // Undo restores what was heard, with the same local rules a cleanup-off paste gets,
+    // but never as a list: the words as spoken.
+    let undo_text = rules::apply(&raw, RuleOptions { remove_fillers: false, lists: false, ..Default::default() });
     insert(job.target, ctx, rec, final_text, undo_text, raw_used, reason, timings, job.key_up).await;
 }
 
@@ -1163,5 +1184,23 @@ mod tests {
         assert!(matches!(chain_of(["", " "], true).await, Err(ProviderError::BadResponse(m)) if m == EMPTY_TRANSCRIPT));
         // Little speech: an empty answer is believed, as before.
         assert_eq!(chain_of(["", "unused"], false).await.unwrap(), (0, String::new()));
+    }
+
+    #[test]
+    fn list_formatting_follows_the_setting_and_skips_terminals() {
+        let mut s = Settings::default();
+        assert!(rule_opts(&s, "slack.exe", None, false).lists);
+        assert!(!rule_opts(&s, "WindowsTerminal.exe", None, false).lists);
+        assert!(!rule_opts(&s, "com.apple.terminal", None, false).lists);
+        s.format_lists = false;
+        assert!(!rule_opts(&s, "slack.exe", None, false).lists);
+    }
+
+    #[test]
+    fn accepted_ai_text_still_gets_list_structure() {
+        let o = rule_opts(&Settings::default(), "slack.exe", None, false);
+        assert_eq!(finish_cleaned("First, check the logs. Second, restart the service.", o), "1. Check the logs\n2. Restart the service");
+        assert_eq!(finish_cleaned("1. Check the logs\n2. Restart the service", o), "1. Check the logs\n2. Restart the service");
+        assert_eq!(finish_cleaned("Let's meet at three.", o), "Let's meet at three.");
     }
 }
